@@ -1,1 +1,1 @@
-module.exports = require("node-geoip-native");
+module.exports = require("geoip-native");
