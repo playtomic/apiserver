@@ -16,22 +16,22 @@ describe("gamevars", function() {
             return done();
         }
 		
-        db.gamebase.gamevars.remove({filter: {publickey: testgame.publickey}}, function(error) {
+        db.playtomic.gamevars.remove({filter: {publickey: testgame.publickey}}, function(error) {
             if(error) {
                 throw(error);
             }
 			
-            db.gamebase.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar1", value: "testvalue1"}}, function(error, obj) {
+            db.playtomic.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar1", value: "testvalue1"}}, function(error, obj) {
 				if(error) {
 					throw(error);
 				}
 				
-	            db.gamebase.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar2", value: "testvalue2"}}, function(error, obj) {
+	            db.playtomic.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar2", value: "testvalue2"}}, function(error, obj) {
 					if(error) {
 						throw(error);
 					}
 					
-		            db.gamebase.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar3", value: "testvalue3 and the final gamevar"}}, function(error, obj) {
+		            db.playtomic.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar3", value: "testvalue3 and the final gamevar"}}, function(error, obj) {
 						if(error) {
 							throw(error);
 						}

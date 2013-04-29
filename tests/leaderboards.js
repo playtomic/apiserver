@@ -28,11 +28,11 @@ describe("leaderboards", function() {
             fields: {}
         };
 
-        db.gamebase.leaderboard_scores.remove({filter: {publickey: testgame.publickey}}, function(error) {
+        db.playtomic.leaderboard_scores.remove({filter: {publickey: testgame.publickey}}, function(error) {
             if(error) {
                 throw(error);
             }
-            db.gamebase.leaderboard_bans.remove({filter: {publickey: testgame.publickey}}, function(error) {
+            db.playtomic.leaderboard_bans.remove({filter: {publickey: testgame.publickey}}, function(error) {
                 if(error) {
                     throw(error);
                 }
