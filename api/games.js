@@ -57,7 +57,7 @@ if(process.env.testing) {
                 gamelist[publickey] = credentials[i];
             }
 
-            ready = true;
+            games.ready = true;
             return setTimeout(refresh, 30000);
         });
     }

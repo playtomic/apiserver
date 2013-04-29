@@ -1,5 +1,5 @@
 {
-    "name": "Playtomic API Server",
+    "name": "PlaytomicAPIServer",
     "version": "0.0.1",
     "dependencies": {
         "bisection": "0.0.2",

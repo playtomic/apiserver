@@ -92,6 +92,8 @@ var leaderboards = module.exports = {
             query.sort = { points: options.highest || !options.lowest ? -1 : 1 };
         }
 
+        console.log(JSON.stringify(query));
+
         // the scores
         db.playtomic.leaderboard_scores.getAndCount(query, function(error, scores, numscores){
 

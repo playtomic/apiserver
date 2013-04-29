@@ -342,7 +342,6 @@ describe("leaderboards", function() {
             table: "scores",
             highest: true,
             perpage: 7,
-            global: true,
             publickey: testgame.publickey
         };
 
