@@ -9,4 +9,4 @@ like leaderboards, user created content and dynamic content.
 
 Setup instructions and help are available at:
 
-  - http://playtomic.org/setup.html
+  - http://playtomic.org/server.html
