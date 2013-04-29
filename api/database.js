@@ -2,7 +2,7 @@ var
     config = require(__dirname + "/config.js");
 
 // configuration
-var db = require("node-mongodb-wrapper");
+var db = require(__dirname + "/mongo-wrapper.js");
 db.poolEnabled = true;
 db.poolSize = 20;
 db.killEnabled = true;

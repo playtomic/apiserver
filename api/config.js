@@ -26,6 +26,7 @@ function parseCredentials(connstring) {
     database = database[database.length - 1];
 
     return {
+        alias: "playtomic",
         username: username,
         password: password,
         address: host,
