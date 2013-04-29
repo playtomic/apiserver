@@ -20,10 +20,46 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="leaderboards.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="leaderboards.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/leaderboards.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="333" column="26" selection-start="10210" selection-end="10235" vertical-scroll-proportion="0.18926975">
+            <state line="348" column="33" selection-start="10556" selection-end="10556" vertical-scroll-proportion="-9.872727">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="geoip.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/geoip.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="geoip.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/node_modules/node-geoip-native/geoip.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="157" column="14" selection-start="3273" selection-end="3273" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="geoip.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/v1/geoip.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="geoip.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/geoip.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="73" column="27" selection-start="2021" selection-end="2021" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -47,10 +83,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="leaderboards.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="leaderboards.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/leaderboards.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="94" column="43" selection-start="2982" selection-end="2982" vertical-scroll-proportion="0.0">
+            <state line="93" column="0" selection-start="2938" selection-end="2938" vertical-scroll-proportion="0.3806818">
               <folding />
             </state>
           </provider>
@@ -97,9 +133,9 @@
         <option value="$PROJECT_DIR$/README.markdown" />
         <option value="$PROJECT_DIR$/tests/gamevars.js" />
         <option value="$PROJECT_DIR$/api/games.js" />
-        <option value="$PROJECT_DIR$/api/leaderboards.js" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/tests/leaderboards.js" />
+        <option value="$PROJECT_DIR$/api/leaderboards.js" />
       </list>
     </option>
   </component>
@@ -223,6 +259,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="node_modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="geoip-native" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="apiserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="apiserver" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="api" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -332,34 +386,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/api/errorcodes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="2" selection-start="3057" selection-end="3057" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="1" selection-start="1039" selection-end="1039" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/gamevars.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="20" selection-start="674" selection-end="674" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/playerlevels.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="74" column="9" selection-start="2368" selection-end="2368" vertical-scroll-proportion="0.63221884">
@@ -423,13 +449,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/leaderboards.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="43" selection-start="2982" selection-end="2982" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1" column="25" selection-start="27" selection-end="27" vertical-scroll-proportion="0.0">
@@ -439,7 +458,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/leaderboards.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="333" column="26" selection-start="10210" selection-end="10235" vertical-scroll-proportion="0.18926975">
+        <state line="348" column="33" selection-start="10556" selection-end="10556" vertical-scroll-proportion="-9.872727">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/geoip.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/node-geoip-native/geoip.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="157" column="14" selection-start="3273" selection-end="3273" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/v1/geoip.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/geoip.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="27" selection-start="2021" selection-end="2021" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/leaderboards.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="93" column="0" selection-start="2938" selection-end="2938" vertical-scroll-proportion="0.3806818">
           <folding />
         </state>
       </provider>

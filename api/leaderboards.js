@@ -92,8 +92,6 @@ var leaderboards = module.exports = {
             query.sort = { points: options.highest || !options.lowest ? -1 : 1 };
         }
 
-        console.log(JSON.stringify(query));
-
         // the scores
         db.playtomic.leaderboard_scores.getAndCount(query, function(error, scores, numscores){
 
@@ -253,6 +251,11 @@ var leaderboards = module.exports = {
             if(error) {
                 callback(error + " (api.leaderboards.saveAndList:232)", errorcode);
                 return;
+            }
+
+            if(options.playerid && options.excludeplayerid) {
+                delete(options.playerid);
+                delete(options.excludeplayerid);
             }
 
             // get scores before or after
