@@ -664,7 +664,7 @@ setInterval(function() {
  */
 for(var databasename in databases) {
 
-    var dbn = databases[databasename].name;
+    var dbn = databases[databasename].alias || databases[databasename].name;
     db[dbn] = databases[databasename];
     db[dbn].dbn = dbn;
 
@@ -761,11 +761,7 @@ function configureDatabases() {
 
     for(var databasename in databases) {
 
-        var databasename = databases[databasename].alias || databasename;
-
-        var dbn = "playtomic";
-        databasename = databases[databasename].name;
-
+        var dbn = databases[databasename].alias || databasename;
         db[dbn] = databases[databasename];
         db[dbn].dbn = dbn;
 
