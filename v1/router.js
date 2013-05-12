@@ -36,9 +36,8 @@ module.exports = {
             return output.terminate(payload, response, 1, "Invalid request (router.js:41)");
         }
 
-
         var config = games.load(publickey);
-
+		
         if(!config) {
             if(testcallback) {
                 testcallback(false);
@@ -111,7 +110,6 @@ module.exports = {
 
             return output.terminate(payload, response, 1, "Section '" + payload.section + "' or action '" + payload.action + "' is invalid (router.js:113)");
         }
-
 
         sections[payload.section][payload.action](payload, request, response, testcallback);
     }

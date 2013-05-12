@@ -1,6 +1,7 @@
 var api = require(__dirname + "/../api"),
     datetime = api.datetime,
-    errormessages = api.errormessages;
+    errormessages = api.errormessages,
+    JSON_HEADER = {"Content-Type": "application/json"};
 
 module.exports = {
 
@@ -13,9 +14,8 @@ module.exports = {
      * @return {*}
      */
     terminate: function(payload, response, errorcode, exceptionmessage) {
-
-        // end the request
         var jstr = "{\"success\": false, \"errorcode\": " + errorcode + ", \"exceptionmessage\": \"" + exceptionmessage + "\"}";
+        response.writeHead(200, JSON_HEADER);
         response.end(jstr);
         return jstr;
     },
@@ -57,6 +57,7 @@ module.exports = {
 
         // end the request
         var jstr = JSON.stringify(json);
+        response.writeHead(200, JSON_HEADER);
         response.end(jstr);
         return jstr;
     }
