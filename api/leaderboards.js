@@ -164,14 +164,12 @@ var leaderboards = module.exports = {
         score.points = options.points;
         score.date = datetime.now;
 
-        //console.log(JSON.stringify(score));
-
         // check bans
 
         // insert
         if(options.hasOwnProperty("allowduplicates") && options.allowduplicates) {
 
-            //console.log("inserting");
+            console.log("*** DUPLICATES ALLOWED");
 
             db.playtomic.leaderboard_scores.insert({doc: score, safe: true}, function(error, item) {
 
@@ -187,6 +185,7 @@ var leaderboards = module.exports = {
         }
 
         // update if it's better or worse
+		console.log("*** CHECKING FOR DUPLICATES");
 
         // check for duplicates, by default we will assume highest unless
         // lowest is explicitly specified
@@ -219,15 +218,16 @@ var leaderboards = module.exports = {
 
             // check if the new score is higher or lower
             var dupe = items[0];
-
+			
             if((dupe.points <= score.points && options.highest) || (dupe.points >= score.points && options.lowest)) {
-
+				
+				score._id = dupe._id;
+				
                 var query = {
                     filter: { _id: dupe._id },
-                    update: { date: options.date, points: options.points, fields: options.fields },
-                    doc: dupe
+                    doc: score
                 };
-
+				
                 db.playtomic.leaderboard_scores.update(query, function(error, item) {
 
                     if(error) {
