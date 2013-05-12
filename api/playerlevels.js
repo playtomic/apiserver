@@ -227,7 +227,7 @@ var cache = {};
 var ratings = {
 
     add: function(hash) {
-        cache[hash] = datetime.now;
+        cache[hash] = 60;
     },
 
     check: function(hash) {
