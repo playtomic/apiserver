@@ -25,6 +25,7 @@ var prepareRequests = function(request, response, next) {
     request.on("data", function (data) {
         chunk += data;
     });
+
     request.on("end", function () {
         request.body = querystring.parse(chunk);
         next();
@@ -34,8 +35,8 @@ var prepareRequests = function(request, response, next) {
 
 // Configuration
 app.configure(function(){
-	app.use(express.bodyParser());
     app.use(prepareRequests);
+    app.use(express.bodyParser());
     app.use(app.router);
 });
 
