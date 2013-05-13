@@ -96,7 +96,6 @@ var leaderboards = module.exports = {
         db.playtomic.leaderboard_scores.getAndCount(query, function(error, scores, numscores){
 
             if(error) {
-                //console.log(JSON.stringify(query));
                 callback("unable to load scores: " + error + " (api.leaderboards.list:104)", errorcodes.GeneralError);
                 return;
             }
@@ -133,7 +132,6 @@ var leaderboards = module.exports = {
         }
 
         if(!options.highest && !options.lowest) {
-            //console.log("assuming highest");
             options.highest = true;
         }
 
@@ -144,7 +142,7 @@ var leaderboards = module.exports = {
         // just add more fields directly in your game and they will end up in your scores and returned
         // to your game
         var exclude = ["allowduplicates", "highest", "lowest", "numfields", "section", "action",
-                        "ip", "date", "url", "rank", "points", "page", "perpage", "global", "filters"];
+                        "ip", "date", "url", "rank", "points", "page", "perpage", "global", "filters", "debug"];
 
         for(var x in options) {
             if(exclude.indexOf(x) > -1) {
@@ -163,13 +161,11 @@ var leaderboards = module.exports = {
                          options.source);
         score.points = options.points;
         score.date = datetime.now;
-
+		
         // check bans
 
         // insert
         if(options.hasOwnProperty("allowduplicates") && options.allowduplicates) {
-
-            console.log("*** DUPLICATES ALLOWED");
 
             db.playtomic.leaderboard_scores.insert({doc: score, safe: true}, function(error, item) {
 
@@ -183,9 +179,6 @@ var leaderboards = module.exports = {
 
             return;
         }
-
-        // update if it's better or worse
-		console.log("*** CHECKING FOR DUPLICATES");
 
         // check for duplicates, by default we will assume highest unless
         // lowest is explicitly specified
@@ -238,24 +231,18 @@ var leaderboards = module.exports = {
                     callback(null, errorcodes.NoError);
                 });
             } else {
-                //console.log("rejecting");
                 callback(null, errorcodes.NotBestScore);
             }
         });
     },
 
     saveAndList: function(options, callback) {
-
+		
         leaderboards.save(options, function(error, errorcode) {
 
             if(error) {
                 callback(error + " (api.leaderboards.saveAndList:232)", errorcode);
                 return;
-            }
-
-            if(options.playerid && options.excludeplayerid) {
-                delete(options.playerid);
-                delete(options.excludeplayerid);
             }
 
             // get scores before or after
@@ -264,10 +251,14 @@ var leaderboards = module.exports = {
                     publickey: options.publickey,
                     table: options.table
                 },
-                sort: options.highest ? {score : -1 } : {score: 1 },
+                sort: options.highest ? {score : -1} : {score: 1},
                 cache: true,
                 cachetime: 120
             };
+			
+			if(options.playerid && !options.excludeplayerid) {
+				query.filter.playerid = options.playerid;
+			}
 
             if(options.highest || !options.lowest) {
                 query.filter.points = {"$gte": options.points};
@@ -289,7 +280,7 @@ var leaderboards = module.exports = {
             }
 
             var serrorcode = errorcode;
-
+			
             db.playtomic.leaderboard_scores.count(query, function(error, numscores) {
 
                 if(error) {
@@ -298,8 +289,9 @@ var leaderboards = module.exports = {
                 }
 
                 var page = Math.floor(numscores / options.perpage);
-                var rank = page * options.perpage + 1;
-
+                var rank = page * options.perpage;
+				options.page = page + 1;
+				
                 leaderboards.list(options, function(error, errorcode, numscores, scores) {
 
                     if(error) {
