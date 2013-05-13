@@ -154,7 +154,7 @@ var playerlevels = module.exports = {
         // fields that just aren't relevant, by doing it this way it's easier to extend because you can
         // just add more fields directly in your game and they will end up in your scores and returned
         // to your game
-        var exclude = ["section", "action", "ip", "date", "url", "page", "perpage", "filters"];
+        var exclude = ["section", "action", "ip", "date", "url", "page", "perpage", "filters", "debug"];
 
         for(var x in options) {
             if(exclude.indexOf(x) > -1) {
