@@ -81,8 +81,11 @@ module.exports = {
 
         payload.ip = request.ip;
         payload.url = "https://" + request.headers.host + request.url;
-        payload.debug = urlparams.query.debug;
-        payload.publickey = publickey;
+		payload.publickey = request.query.publickey;
+		
+		if(urlparams.query.debug) {
+     	   payload.debug = urlparams.query.debug;
+		}
 
         // make sure the section is valid and allowed
         if(!payload.section || !sections.hasOwnProperty(payload.section)) {
