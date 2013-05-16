@@ -55,6 +55,10 @@ if(process.env.testing) {
             for(var i=0; i<credentials.length; i++) {
                 var publickey = credentials[i].publickey;
                 gamelist[publickey] = credentials[i];
+				
+				if(!credentials[i].hasOwnProperty("enabled")) {
+					credentials[i].enabled = true;
+				}
             }
 
             games.ready = true;
