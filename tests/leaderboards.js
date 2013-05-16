@@ -46,7 +46,7 @@ describe("leaderboards", function() {
             delete(score._id);
             score.name = names.pop();
             score.playerid = ids.pop();
-            score.points = names.length * 1000;
+            score.points = 20000 + (names.length * 1000);
             score.table = "scores";
 
             leaderboards.save(score, function(error, item){
@@ -116,7 +116,6 @@ describe("leaderboards", function() {
                                 lowest: true,
                                 perpage: 10,
                                 page: 1,
-                                global: true,
                                 publickey: testgame.publickey
                             }, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
@@ -134,7 +133,6 @@ describe("leaderboards", function() {
                                 highest: true,
                                 perpage: 10,
                                 page: 1,
-                                global: true,
                                 publickey: testgame.publickey,
                                 friendslist: [1, 2, 3, 4]
                             }, function(error, errorcode, numscores, scores) {
@@ -160,9 +158,8 @@ describe("leaderboards", function() {
 
                                     // list params
                                     table: "scores",
-                                    highest: true,
-                                    perpage: 1,
-                                    global: true,
+                                    lowest: true,
+                                    perpage: 2,
                                     publickey: testgame.publickey
 
 
@@ -170,7 +167,7 @@ describe("leaderboards", function() {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores, 11);
-            assert.equal(scores.length, 1);
+            assert.equal(scores.length, 2);
             assert.equal(scores[0].points, 10000);
             assert.equal(scores[0].name, "ben");
             done();
@@ -193,7 +190,6 @@ describe("leaderboards", function() {
             table: "scores",
             highest: true,
             perpage: 10,
-            global: true,
             publickey: testgame.publickey,
             filters: {
                 age: 1
@@ -227,7 +223,6 @@ describe("leaderboards", function() {
             publickey: testgame.publickey,
             table: "scores",
             highest: true,
-            global: true,
             mode: "newest",
             page: 3,
             perpage: 5,
@@ -346,8 +341,8 @@ describe("leaderboards", function() {
             publickey: testgame.publickey
         };
 
-        v1.saveAndList(payload, testgame.request, testgame.response, function(error, output) {
-
+        v1.saveandlist(payload, testgame.request, testgame.response, function(error, output) {
+			
             assert.notEqual(output, null);
             var json;
 
@@ -360,8 +355,8 @@ describe("leaderboards", function() {
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
-            assert.equal(json.scores.length, 7);
-            assert.equal(json.numscores, 14);
+            assert.equal(json.scores.length, 2);
+            assert.equal(json.numscores, 2);
             done();
         });
     });
