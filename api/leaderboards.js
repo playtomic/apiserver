@@ -152,12 +152,12 @@ var leaderboards = module.exports = {
             score[x] = options[x];
         }
 
-        score.hash = md5(options.ip + "." +
+        score.hash = md5(options.publickey + 
+						 options.ip + "." +
                          options.table + "." +
                          options.name + "." +
                          options.playerid + "." +
-                         (options.highest || false) + "." +
-                         (options.lowest || false) + "." +
+                         options.highest + "." +
                          options.source);
         score.points = options.points;
         score.date = datetime.now;
