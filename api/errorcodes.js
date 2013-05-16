@@ -29,41 +29,50 @@ module.exports = {
         AlreadyRated: 402,
         NoLevelName: 403,
         NoLevelId: 404,
-        LevelAlreadyExists: 405
-    },
+        LevelAlreadyExists: 405,
+		
+		AchievementsDisabled: 500,
+		NoPlayerId: 501,
+		NoPlayerName: 502,
+		NoAchievementId: 503,
+		InvalidAchievement: 505,
+		AlreadyHadAchievement: 506
+	},
 
     descriptions: {
         // General Errors
         "0": "No error",
-        "1": "General error, this typically means the player is unable to connect to the Playtomic servers",
-        "2": "Invalid game credentials. Make sure you use your SWFID, GUID and if necessary API KEY from the 'API' section in the dashboard.",
+        "1": "General error, this typically means the player is unable to connect",
+        "2": "Invalid game credentials. Make sure you use the keys you set up in your database.",
         "3": "Request timed out.",
         "4": "Invalid request.",
     
         // GeoIP Errors
-        "100": "GeoIP API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers.",
+        "100": "GeoIP API has been disabled for this game.",
     
         // Leaderboard Errors
-        "200": "Leaderboard API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers.",
-        "201": "The source URL or name weren't provided when saving a score. Make sure the player specifies a name and the game is initialized before anything else using the code in the `Set your game up` section.",
-        "202": "Invalid auth key. You should not see this normally, players might if they tamper with your game.",
-        "203": "No Facebook user id on a score specified as a Facebook submission.",
-        "204": "Table name wasn't specified for creating a private leaderboard.",
-        "205": "Permalink structure wasn't specified: http://website.com/game/whatever?leaderboard=",
-        "206": "Leaderboard id wasn't provided loading a private leaderboard.",
-        "207": "Invalid leaderboard id was provided for a private leaderboard.",
-        "208": "Player is banned from submitting scores in your game.",
-        "209": "Score was not the player's best score.  You can notify the player, highlight their best score via score.SubmittedOrBest, or circumvent this by specifying 'allowduplicates' to be true in your save options.",
-    
+        "200": "Leaderboard API has been disabled for this game.",
+        "201": "The player's name was not provided when saving a score.",
+		"203": "Player is banned from submitting scores in this game.",
+		"204": "Score was not saved because it was not the player's best.  You can allow players to have more than one score by specifying allowduplicates=true in your save options.",
+		
         // GameVars Errors
-        "300": "GameVars API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers.",
+        "300": "GameVars API has been disabled for this game.",
     
         // LevelSharing Errors
-        "400": "Level sharing API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers.",
+        "400": "Level sharing API has been disabled for this game.",
         "401": "Invalid rating value (must be 1 - 10).",
         "402": "Player has already rated that level.",
         "403": "Missing level name",
         "404": "Missing levelid.",
-        "405": "Level already exists."
+        "405": "Level already exists.",
+		
+		// Achievement errors
+		"500": "Achievements API has been disabled for this game.",
+		"501": "Missing playerid",
+		"502": "Missing player name",
+		"503": "Missing achievementid",
+		"504": "Invalid achievementid or achievement key",
+		"505": "Player already had the achievement.  You can overwrite old achievements with overwrite=true or save each time the player is awarded with allowduplicates=true"
     }
 };
