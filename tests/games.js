@@ -9,6 +9,11 @@ describe("games", function() {
     
     // wait for the games to load
     beforeEach(function(done) {
+		
+		if(gvdata) {
+			done();
+			return;
+		}
 
         function f() {
             
