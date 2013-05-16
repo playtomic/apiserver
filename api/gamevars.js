@@ -24,7 +24,7 @@ var gamevars = module.exports = {
 (function() {
     var lastupdated = 0;
 
-    function refresh(callback) {
+    function refresh() {
 
         if(!games.ready) {
             return setTimeout(refresh, 1000);
@@ -59,10 +59,6 @@ var gamevars = module.exports = {
                 }
 
                 varlist[publickey][gamevar.name] = gamevar.value;
-            }
-
-            if(callback) {
-                callback(error, varlist);
             }
 
             gamevars.ready = true;
