@@ -534,7 +534,7 @@ describe("achievements", function() {
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
-            assert.equal(json.activity.length, 1);
+            assert.equal(json.achievements.length, 1);
             done();
         });
 	});

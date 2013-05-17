@@ -38,7 +38,7 @@ module.exports = {
 	            return output.terminate(payload, response, errorcode, error);
 	        }
 
-	        var r = output.end(payload, response, { activity: achievements, numachievements: numachievements }, errorcode);
+	        var r = output.end(payload, response, { achievements: achievements, numachievements: numachievements }, errorcode);
 
 	        if(testing && testcallback) {
 	            testcallback(null, r);
