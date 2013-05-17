@@ -100,23 +100,28 @@ var achievements = module.exports = {
 				{
 					$group: {
 						_id: "$playerid", 
-						playername: {$last: "$playername"}, 
-						source: {$last: "$source"}, 
-						date: {$last: "$date"}, 
-						achievementid: {$last: "$achievementid"}, 
-						fields: {$last: "$fields"},
+						playername: {$first: "$playername"}, 
+						source: {$first: "$source"}, 
+						date: {$first: "$date"}, 
+						oldest: {$last: "$date"},
+						achievementid: {$first: "$achievementid"}, 
+						fields: {$first: "$fields"},
 						awards: {$sum: 1}
 					}
 				},
 				{
 					$project: { 
 						date: "$date", 
+						oldest: "$oldest",
 						achievementid: "$achievementid", 
 						fields: "$fields", 
 						playername: "$playername", 
 						source: "$source",
 						awards: "$awards"
 					}
+				},
+				{
+					$sort: { date: -1 }
 				},
 				{
 					$limit: query.limit
@@ -148,7 +153,7 @@ var achievements = module.exports = {
 					count.splice(0, 0, { $match: m }); 
 				}
 			}
-
+			
 			db.playtomic.achievements_players.aggregateAndCount({ aggregate: aggregate, count: count }, function(error, ritems, numitems) {
 				
 	            if(error) {
@@ -161,6 +166,8 @@ var achievements = module.exports = {
 				
 				for(var i=0; i<items.length; i++) {
 					items[i].achievement = index[items[i].achievementid];
+					items[i].playerid = items[i]._id;
+					items[i].rdate = utils.friendlyDate(utils.fromTimestamp(items[i].date));
 					delete items[i]._id;
 					delete items[i].hash;
 					delete items[i].publickey;
@@ -181,6 +188,7 @@ var achievements = module.exports = {
 				
 				for(var i=0; i<items.length; i++) {
 					items[i].achievement = index[items[i].achievementid];
+					items[i].rdate = utils.friendlyDate(utils.fromTimestamp(items[i].date));
 					delete items[i]._id;
 					delete items[i].hash;
 					delete items[i].publickey;
@@ -272,6 +280,8 @@ var achievements = module.exports = {
 				delete player.hash;
 				delete player.publickey;
 				delete player.achievementid;
+				
+				player.rdate = utils.friendlyDate(utils.fromTimestamp(player.date));
 				
 				// the player's achievement
 				if(player.playerid == options.playerid) {

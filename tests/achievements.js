@@ -102,7 +102,7 @@ describe("achievements", function() {
 	            assert.equal(errorcode, errorcodes.AlreadyHadAchievement);
 				
 				// force a delay for the next save
-				setTimeout(done, 2000);
+				setTimeout(done, 3000);
 			});
 		});
     });
@@ -277,7 +277,7 @@ describe("achievements", function() {
 						done();
 					});
 				});
-			}, 2000);
+			}, 3000);
 		});
     });
 	
@@ -308,7 +308,7 @@ describe("achievements", function() {
 			assert.equal(achievements[1].friends[0].playername, "michelle");
 			
 			// we need the next test to have a delay for different times
-			setTimeout(done, 2000);
+			setTimeout(done, 3000);
 		});
     });
 	
@@ -343,7 +343,7 @@ describe("achievements", function() {
 			};
 			
 			setTimeout(function() { 
-					achievements.save(achievement, function(error, errorcode) {
+				achievements.save(achievement, function(error, errorcode) {
 		            assert.equal(error, null);
 		            assert.equal(errorcode, errorcodes.NoError);
 			
@@ -375,7 +375,7 @@ describe("achievements", function() {
 						done();
 					});
 				});
-			}, 2000);
+			}, 3000);
 		});
     });
 	
@@ -453,17 +453,17 @@ describe("achievements", function() {
 			assert.equal(errorcode, 0);
 			assert.equal(numitems, 3);
 			assert.equal(items.length, 3);
-			assert.equal(items[0].playername, "fred");
+			assert.equal(items[0].playername, "michelle");
 			assert.equal(items[0].awards, 2);
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #2");
 			
-			assert.equal(items[1].playername, "ben");
+			assert.equal(items[1].playername, "fred");
 			assert.equal(items[1].achievement.achievement, "Super Mega Achievement #1");
-			assert.equal(items[1].awards, 1);
+			assert.equal(items[1].awards, 2);
 				
-			assert.equal(items[2].playername, "michelle");
-			assert.equal(items[2].achievement.achievement, "Super Mega Achievement #2");
-			assert.equal(items[2].awards, 2);
+			assert.equal(items[2].playername, "ben");
+			assert.equal(items[2].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[2].awards, 1);
 			done();
 		});
     });
@@ -502,12 +502,12 @@ describe("achievements", function() {
 			assert.equal(errorcode, 0);
 			assert.equal(numitems, 3);
 			assert.equal(items.length, 3);
-			assert.equal(items[0].playername, "fred");
+			assert.equal(items[0].playername, "michelle");
 			assert.equal(items[0].awards, 2);
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #2");
 				
-			assert.equal(items[1].playername, "michelle");
-			assert.equal(items[1].achievement.achievement, "Super Mega Achievement #2");
+			assert.equal(items[1].playername, "fred");
+			assert.equal(items[1].achievement.achievement, "Super Mega Achievement #1");
 			assert.equal(items[1].awards, 2);
 			done();
 		});
