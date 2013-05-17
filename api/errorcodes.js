@@ -34,7 +34,7 @@ module.exports = {
 		AchievementsDisabled: 500,
 		NoPlayerId: 501,
 		NoPlayerName: 502,
-		NoAchievementId: 503,
+		NoAchievement: 503,
 		InvalidAchievement: 505,
 		AlreadyHadAchievement: 506
 	},
