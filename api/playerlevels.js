@@ -222,6 +222,7 @@ function clean(levels, data) {
         }
 
         level.levelid = level._id;
+		level.rdate = utils.friendlyDate(utils.fromTimestamp(level.date));
         delete level._id;
         delete level.hash;
 

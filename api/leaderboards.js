@@ -336,6 +336,7 @@ function clean(scores, baserank) {
 
         score.rank = baserank + i + 1;
         score.scoreid = score._id;
+		score.rdate = utils.friendlyDate(utils.fromTimestamp(score.date));
         delete score._id;
         delete score.hash;
     }
