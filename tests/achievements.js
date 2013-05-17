@@ -391,15 +391,15 @@ describe("achievements", function() {
 			assert.equal(numitems, 5);
 			assert.equal(items.length, 5);
 			assert.equal(items[0].playername, "michelle");
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #2");
+			assert.equal(items[0].awarded.achievement, "Super Mega Achievement #2");
 			assert.equal(items[1].playername, "fred");
-			assert.equal(items[1].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[1].awarded.achievement, "Super Mega Achievement #1");
 			assert.equal(items[2].playername, "michelle");
-			assert.equal(items[2].achievement.achievement, "Super Mega Achievement #2");
+			assert.equal(items[2].awarded.achievement, "Super Mega Achievement #2");
 			assert.equal(items[3].playername, "fred");
-			assert.equal(items[3].achievement.achievement, "Super Mega Achievement #1");			
+			assert.equal(items[3].awarded.achievement, "Super Mega Achievement #1");			
 			assert.equal(items[4].playername, "ben");
-			assert.equal(items[4].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[4].awarded.achievement, "Super Mega Achievement #1");
 			done();
 		});
     });
@@ -417,7 +417,7 @@ describe("achievements", function() {
 			assert.equal(numitems, 1);
 			assert.equal(items.length, 1);			
 			assert.equal(items[0].playername, "ben");
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[0].awarded.achievement, "Super Mega Achievement #1");
 			done();
 		});
     });
@@ -436,7 +436,7 @@ describe("achievements", function() {
 			assert.equal(numitems, 2);
 			assert.equal(items.length, 1);
 			assert.equal(items[0].playername, "michelle");
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #2");
+			assert.equal(items[0].awarded.achievement, "Super Mega Achievement #2");
 			done();
 		});
     });
@@ -455,14 +455,14 @@ describe("achievements", function() {
 			assert.equal(items.length, 3);
 			assert.equal(items[0].playername, "michelle");
 			assert.equal(items[0].awards, 2);
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #2");
+			assert.equal(items[0].awarded.achievement, "Super Mega Achievement #2");
 			
 			assert.equal(items[1].playername, "fred");
-			assert.equal(items[1].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[1].awarded.achievement, "Super Mega Achievement #1");
 			assert.equal(items[1].awards, 2);
 				
 			assert.equal(items[2].playername, "ben");
-			assert.equal(items[2].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[2].awarded.achievement, "Super Mega Achievement #1");
 			assert.equal(items[2].awards, 1);
 			done();
 		});
@@ -483,7 +483,7 @@ describe("achievements", function() {
 			assert.equal(items.length, 1);
 			assert.equal(items[0].playername, "ben");
 			assert.equal(items[0].awards, 1);
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[0].awarded.achievement, "Super Mega Achievement #1");
 			done();
 		});
     });
@@ -504,10 +504,10 @@ describe("achievements", function() {
 			assert.equal(items.length, 3);
 			assert.equal(items[0].playername, "michelle");
 			assert.equal(items[0].awards, 2);
-			assert.equal(items[0].achievement.achievement, "Super Mega Achievement #2");
+			assert.equal(items[0].awarded.achievement, "Super Mega Achievement #2");
 				
 			assert.equal(items[1].playername, "fred");
-			assert.equal(items[1].achievement.achievement, "Super Mega Achievement #1");
+			assert.equal(items[1].awarded.achievement, "Super Mega Achievement #1");
 			assert.equal(items[1].awards, 2);
 			done();
 		});

@@ -165,7 +165,7 @@ var achievements = module.exports = {
 				var index = achievementIndex(options.publickey);
 				
 				for(var i=0; i<items.length; i++) {
-					items[i].achievement = index[items[i].achievementid];
+					items[i].awarded = index[items[i].achievementid];
 					items[i].playerid = items[i]._id;
 					items[i].rdate = utils.friendlyDate(utils.fromTimestamp(items[i].date));
 					delete items[i]._id;
@@ -187,7 +187,7 @@ var achievements = module.exports = {
 				var index = achievementIndex(options.publickey);
 				
 				for(var i=0; i<items.length; i++) {
-					items[i].achievement = index[items[i].achievementid];
+					items[i].awarded = index[items[i].achievementid];
 					items[i].rdate = utils.friendlyDate(utils.fromTimestamp(items[i].date));
 					delete items[i]._id;
 					delete items[i].hash;
