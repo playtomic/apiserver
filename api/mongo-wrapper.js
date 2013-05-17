@@ -26,7 +26,7 @@ var databases = {
  */
 function trace(message) {
 
-    if(!trace) {
+    if(!debug) {
         return;
     }
 
@@ -454,6 +454,135 @@ module.exports = db = {
             });
         });
     },
+	
+    /**
+     * Aggregates a collection
+     *
+     * @param database Database config name
+     * @param collectionname The collection name
+     * @param options { aggregate: [pipeline], cache: false, cachetime: 60 }
+     * @param callback Your callback method(error, items, numitems)
+     */
+    aggregate: function(database, collectionname, options, callback) {
+
+        if(options.cache) {
+            var cached = cache.get(database, collectionname, "aggregate", options);
+
+            if(cached) {
+                callback(null, cached.items);
+                return;
+            }
+        }
+
+        getConnection(database, collectionname, "aggregate", function(error, collection, cnn) {
+
+            if(error) {
+
+                if(callback) {
+                    callback(error, []);
+                }
+
+                trace("aggregate error: " + error);
+                killConnection(cnn, error);
+                return;
+            }
+
+            collection.aggregate(options.aggregate).toArray(function (error, items) {
+
+                if (error) {
+
+                    if(callback) {
+                        callback(error, []);
+                    }
+
+                    trace("aggregate error: " + error);
+                    killConnection(cnn, error);
+                    return;
+                }
+
+                if(callback) {
+                    callback(null, items);
+                }
+            });
+        });
+    },
+	
+    /**
+     * Aggregates and counts the total number of aggregated reuslts
+     *
+     * @param database Database config name
+     * @param collectionname The collection name
+     * @param options { aggregate: [pipeline], count: [pipeline], cache: false, cachetime: 60 }
+     * @param callback Your callback method(error, items, numitems)
+     */
+    aggregateAndCount: function(database, collectionname, options, callback) {
+
+        if(options.cache) {
+            var cached = cache.get(database, collectionname, "aggregateAndCount", options);
+
+            if(cached) {
+                callback(null, cached.items, cached.numitems);
+                return;
+            }
+        }
+
+        getConnection(database, collectionname, "aggregateAndCount", function(error, collection, cnn) {
+
+            if(error) {
+
+                if(callback) {
+                    callback(error, [], 0);
+                }
+
+                trace("aggregateAndCount error: " + error);
+                killConnection(cnn, error);
+                return;
+            }
+
+            collection.aggregate(options.aggregate, function (error, items) {
+
+                if (error) {
+					
+					console.log("aggregate failed");
+					console.log(JSON.stringify(options, null, "\t"));
+					console.log("error: " + error);
+
+                    if(callback) {
+                        callback(error, [], 0);
+                    }
+
+                    trace("aggregateAndCount error: " + error);
+                    killConnection(cnn, error);
+                    return;
+                }
+
+                collection.aggregate(options.count, function(error, numitems) {
+
+                    killConnection(cnn, error);
+
+                    if (error) {
+
+                        if(callback) {
+                            callback(error, [], 0);
+                        }
+
+                        trace("aggregateAndCount error: " + error);
+                        return;
+                    }
+					
+					numitems = numitems[0].count;
+
+                    if(options.cache) {
+                        cache.set(database, collectionname, "aggregateAndCount", options, {items: items, numitems: numitems});
+                    }
+					
+                    if(callback) {
+                        callback(null, items, numitems);
+                    }
+                });
+            });
+        });
+    },
 
     /**
      * Counts the number of items matching a query
@@ -660,37 +789,71 @@ setInterval(function() {
 }, 1000);
 
 /*
- * Shorthand access to functions via db and collections
+ * Creates the shorthand references to databases and provides methods
+ * for including shorthand collection paths too.  You don't need to call
+ * this manually, it will automatically apply to the locally defined
+ * list of databases, or run again if you pass your own configuration.
  */
-for(var databasename in databases) {
+function configureDatabases() {
+    for(var databasename in databases) {
+		configureDatabase(databasename);
+	}
+}
 
-    var dbn = databases[databasename].alias || databases[databasename].name;
-    db[dbn] = databases[databasename];
-    db[dbn].dbn = dbn;
+configureDatabases();
+
+function configureDatabase(databasename) {
+	
+	var alias = databasename;
+	
+	if(databases[databasename].alias) {
+		alias = databases[databasename].alias;
+	}
+    
+	db[alias] = databases[databasename];
+	db[alias].databasename = databasename;
 
     /**
-     * Initializes a single collection's shorthand
-     * @param cdn the collection name
+     * Initializes a collection's shorthand methods for accessing
+	 * via db.databasename.collectionname.method(..)
+     * @param collectionname the collection name
      */
-    db[dbn].collection = function(cdn) {
+    db[alias].collection = function(collectionname) {
 
-        var ddbn = this.dbn;
-
-        if(db[this.dbn][cdn]) {
-            return;
-        }
-
-        db[ddbn][cdn] = {};
-        db[ddbn][cdn].cdn = cdn;
-        db[ddbn][cdn].dbn = ddbn;
-        db[ddbn][cdn].get = function(options, callback) { db.get(this.dbn, this.cdn, options, callback); }
-        db[ddbn][cdn].getOrInsert = function(options, callback) { db.getOrInsert(this.dbn, this.cdn, options, callback); }
-        db[ddbn][cdn].getAndCount = function(options, callback) { db.getAndCount(this.dbn, this.cdn, options, callback); }
-        db[ddbn][cdn].count = function(options, callback) { db.count(this.dbn, this.cdn, options, callback); }
-        db[ddbn][cdn].move = function(collection2name, options, callback) { db.move(this.dbn, this.cdn, collection2name, options, callback); }
-        db[ddbn][cdn].update = function(options, callback) { db.update(this.dbn, this.cdn, options, callback) };
-        db[ddbn][cdn].insert = function(options, callback) { db.insert(this.dbn, this.cdn, options, callback) };
-        db[ddbn][cdn].remove = function(options, callback) { db.remove(this.dbn, this.cdn, options, callback); }
+        var databasename = this.databasename;
+		
+        db[databasename][collectionname] = {
+			get: function(options, callback) { 
+				db.get(databasename, collectionname, options, callback); 
+			},
+			getOrInsert: function(options, callback) { 
+				db.getOrInsert(databasename, collectionname, options, callback); 
+			},
+			getAndCount: function(options, callback) { 
+				db.getAndCount(databasename, collectionname, options, callback); 
+			},
+			count: function(options, callback) { 
+				db.count(databasename, collectionname, options, callback); 
+			},
+			move: function(collection2name, options, callback) { 
+				db.move(databasename, collectionname, collection2name, options, callback); 
+			},
+			update: function(options, callback) { 
+				db.update(databasename, collectionname, options, callback); 
+			},
+			insert: function(options, callback) { 
+				db.insert(databasename, collectionname, options, callback); 
+			},
+			remove: function(options, callback) { 
+				db.remove(databasename, collectionname, options, callback); 
+			},
+			aggregate: function(options, callback) { 
+				db.aggregate(databasename, collectionname, options, callback); 
+			},
+			aggregateAndCount: function(options, callback) { 
+				db.aggregateAndCount(databasename, collectionname, options, callback); 
+			}
+		}
     };
 
     /**
@@ -698,28 +861,29 @@ for(var databasename in databases) {
      * @param opt either an array of collection names or a callback method(error) for
      * loading directly from the db
      */
-    db[dbn].collections = function(opt) {
+    db[alias].collections = function(opt) {
 
         var callback;
+		var databasename = this.databasename;
 
+		// received an array of collections
         if(opt) {
 
             if(typeof opt === 'function') {
                 callback = opt;
             } else {
                 for(var i=0; i<opt.length; i++) {
-                    this.collection(opt[i]);
+                    db[databasename].collection(opt[i]);
                 }
 
                 return;
             }
         }
 
-        var ddbn = this.dbn;
-        getConnection(ddbn, "", "", function(error, collection, cnn) {
+		// look up the collections
+        getConnection(databasename, "", "", function(error, collection, connection) {
 
             if(error) {
-                killConnection(cnn);
                 callback(error);
                 return;
             }
@@ -727,7 +891,6 @@ for(var databasename in databases) {
             connection.collectionNames({namesOnly: true}, function(error, names) {
 
                 if(error) {
-                    killConnection(cnn);
                     callback(error);
                     return;
                 }
@@ -736,116 +899,17 @@ for(var databasename in databases) {
 
                     var name = names[i];
 
-                    if(name.indexOf(ddbn + ".system.") == 0)
+                    if(name.indexOf(databasename + ".system.") == 0)
                         continue;
 
-                    var dcdn = name.substring(ddbn.length + 1);
-
-                    db[ddbn].collection(dcdn);
+                    var collectionname = name.substring(databasename.length + 1);
+                    db[databasename].collection(collectionname);
                 }
 
-                killConnection(cnn);
+                connection.close();
+                connection = null;
                 callback(null);
             });
         });
     }
 }
-
-/*
- * Creates the shorthand references to databases and provides methods
- * for including shorthand collection paths too.  You don't need to call
- * this manually, it will automatically apply to the locally defined
- * list of databases, or run again if you pass your own configuration.
- */
-function configureDatabases() {
-
-    for(var databasename in databases) {
-
-        var dbn = databases[databasename].alias || databasename;
-        db[dbn] = databases[databasename];
-        db[dbn].dbn = dbn;
-
-        /**
-         * Initializes a single collection's shorthand
-         * @param cdn the collection name
-         */
-        db[dbn].collection = function(cdn) {
-
-            var ddbn = this.dbn;
-
-            if(db[this.dbn][cdn]) {
-                return;
-            }
-
-            db[ddbn][cdn] = {};
-            db[ddbn][cdn].cdn = cdn;
-            db[ddbn][cdn].dbn = ddbn;
-            db[ddbn][cdn].get = function(options, callback) { db.get(this.dbn, this.cdn, options, callback); }
-            db[ddbn][cdn].getOrInsert = function(options, callback) { db.getOrInsert(this.dbn, this.cdn, options, callback); }
-            db[ddbn][cdn].getAndCount = function(options, callback) { db.getAndCount(this.dbn, this.cdn, options, callback); }
-            db[ddbn][cdn].count = function(options, callback) { db.count(this.dbn, this.cdn, options, callback); }
-            db[ddbn][cdn].move = function(collection2name, options, callback) { db.move(this.dbn, this.cdn, collection2name, options, callback); }
-            db[ddbn][cdn].update = function(options, callback) { db.update(this.dbn, this.cdn, options, callback) };
-            db[ddbn][cdn].insert = function(options, callback) { db.insert(this.dbn, this.cdn, options, callback) };
-            db[ddbn][cdn].remove = function(options, callback) { db.remove(this.dbn, this.cdn, options, callback); }
-        };
-
-        /**
-         * Initializes the collection shorthand on a database
-         * @param opt either an array of collection names or a callback method(error) for
-         * loading directly from the db
-         */
-        db[dbn].collections = function(opt) {
-
-            var callback;
-
-            if(opt) {
-
-                if(typeof opt === 'function') {
-                    callback = opt;
-                } else {
-                    for(var i=0; i<opt.length; i++) {
-                        this.collection(opt[i]);
-                    }
-
-                    return;
-                }
-            }
-
-            var ddbn = this.dbn;
-            getConnection(ddbn, "", "", function(error, collection, cnn) {
-
-                if(error) {
-                    callback(error);
-                    return;
-                }
-
-                connection.collectionNames({namesOnly: true}, function(error, names) {
-
-                    if(error) {
-                        callback(error);
-                        return;
-                    }
-
-                    for(var i=0; i<names.length; i++) {
-
-                        var name = names[i];
-
-                        if(name.indexOf(ddbn + ".system.") == 0)
-                            continue;
-
-                        var dcdn = name.substring(ddbn.length + 1);
-
-                        db[ddbn].collection(dcdn);
-                    }
-
-                    connection.close();
-                    connection = null;
-                    callback(null);
-                });
-            });
-        }
-    }
-}
-
-configureDatabases();
