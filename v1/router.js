@@ -8,7 +8,8 @@ var url = require("url"),
         gamevars: require(__dirname + "/gamevars.js"),
         geoip: require(__dirname + "/geoip.js"),
         leaderboards: require(__dirname + "/leaderboards.js"),
-        playerlevels: require(__dirname + "/playerlevels.js")
+        playerlevels: require(__dirname + "/playerlevels.js"),
+		achievements: require(__dirname + "/achievements.js")
     };
 
 module.exports = {
@@ -65,6 +66,8 @@ module.exports = {
 
             return output.terminate(payload, response, 1, "Invalid posted data (router.js:72)");
         }
+		
+		console.log(decrypted);
 
         var payload;
 

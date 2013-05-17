@@ -375,7 +375,7 @@ var achievements = module.exports = {
 		}
 		
 		var hash = md5(options.publickey + "." + 
-						options.achievementid + "." + 
+						achievementid + "." + 
 						options.playerid + "." + 
 						options.source + " ." + 
 						JSON.stringify(options.fields || {}));

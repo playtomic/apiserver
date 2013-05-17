@@ -29,7 +29,8 @@ if(process.env.testing) {
         leaderboards: true,
         playerlevels: true,
         gamevars: true,
-        geoip: true
+        geoip: true,
+		achievements: true
     };
 
     games.ready = true;
@@ -51,13 +52,17 @@ if(process.env.testing) {
                 console.log("GAMES failed to retrieve results from mongodb: " + error);
                 return setTimeout(refresh, 1000);
             }
+			
+			var keys = ["enabled", "leaderboards", "playerlevels", "gamevars", "geoip", "achievements"];
 
             for(var i=0; i<credentials.length; i++) {
                 var publickey = credentials[i].publickey;
                 gamelist[publickey] = credentials[i];
 				
-				if(!credentials[i].hasOwnProperty("enabled")) {
-					credentials[i].enabled = true;
+				for(var j=0; j<keys.length; j++) {				
+					if(!credentials[i].hasOwnProperty(keys[j])) {
+						credentials[i][keys[j]] = true;
+					}
 				}
             }
 
