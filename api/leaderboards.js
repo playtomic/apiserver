@@ -65,7 +65,7 @@ var leaderboards = module.exports = {
 			playerids = playerids.concat(options.friendslist);
 		}
 		
-		if(playerids.length > 0)
+		if(playerids.length > 0) {
             query.filter.playerid = { $in: playerids };
         }
 
