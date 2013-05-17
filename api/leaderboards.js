@@ -55,21 +55,21 @@ var leaderboards = module.exports = {
             query.filter["fields." + x] = options.filters[x];
         }
         
-        // filtering for friends, maximum 100 and we can't tell what is
-        // the 100 important ones so that has to be determined on the
-        // client side
-        if(options.friendslist) {
-            if(options.friendslist.length > 100) {
-                options.friendslist.length = 100;
-            }
-
-            query.filter.playerid = { $in: options.friendslist };
-        }
-
+        // filtering for playerids
+		var playerids = [];
+		
         if(options.playerid) {
-            query.filter.playerid = options.playerid;
+            playerids.push(options.playerid);
         }
         
+        if(options.friendslist) {
+			playerids = playerids.concat(options.friendslist);
+		}
+		
+		if(playerids.length > 0)
+            query.filter.playerid = { $in: playerids };
+        }
+
         // date mode
         switch(options.mode) {
             case "today":

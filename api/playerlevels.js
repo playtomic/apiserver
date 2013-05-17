@@ -46,16 +46,19 @@ var playerlevels = module.exports = {
             query.filter.source = utils.baseurl(options.source);
         }
 
-        if(options.friendslist) {
-            if(options.friendslist.length > 100) {
-                options.friendslist.length = 100;
-            }
-
-            query.filter.playerid = { $in: options.friendslist };
-        }
-
+        // filtering for playerids
+		var playerids = [];
+		
         if(options.playerid) {
-            query.filter.playerid = options.playerid;
+            playerids.push(options.playerid);
+        }
+        
+        if(options.friendslist) {
+			playerids = playerids.concat(options.friendslist);
+		}
+		
+		if(playerids.length > 0)
+            query.filter.playerid = { $in: playerids };
         }
 
         db.playtomic.playerlevel_levels.getAndCount(query, function(error, levels, numlevels){
