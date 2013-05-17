@@ -43,11 +43,10 @@ var leaderboards = module.exports = {
             cachetime: 120
         };
 
-        // per-source leaderboards, originally this
-        // was to separate websites but you could use it as
-        // any additional string filter with a database index
+        // per-source website or device scores, websites
+		// get truncated to domain.com
         if(options.source) {
-            query.filter.source = utils.baseurl(options.source);
+            query.filter.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
         }
         
         // filters for custom fields
@@ -119,7 +118,9 @@ var leaderboards = module.exports = {
         // defaults
         if(!options.source) {
             options.source = "";
-        }
+        } else {
+			options.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
+		}
 
         if(!options.name) {
             callback("no name (" + options.name + ")", errorcodes.InvalidName);

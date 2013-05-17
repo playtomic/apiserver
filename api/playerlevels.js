@@ -42,8 +42,10 @@ var playerlevels = module.exports = {
             query.sort = {"date": -1};
         }
 
+        // per-source website or device achievements, websites
+		// get truncated to domain.com
         if(options.source) {
-            query.filter.source = utils.baseurl(options.source);
+            query.filter.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
         }
 
         // filtering for playerids
@@ -150,6 +152,12 @@ var playerlevels = module.exports = {
             callback("missing name (api.playerlevels.save:168)", errorcodes.NoLevelName);
             return;
         }
+		
+		if(!options.source) {
+			options.source = "";
+		} else {
+			options.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
+		}
 
         // small cleanup
         var level = {};
@@ -167,6 +175,7 @@ var playerlevels = module.exports = {
             level[x] = options[x];
         }
 
+		level.source = options.source;
         level.hash = md5(options.publickey + "." + options.ip + "." + options.name + "." + options.source);
         level.date = datetime.now;
         level.votes = 0;
