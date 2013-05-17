@@ -101,11 +101,11 @@ var achievements = module.exports = {
 					$group: {
 						_id: "$playerid", 
 						playername: {$first: "$playername"}, 
-						source: {$first: "$source"}, 
-						date: {$first: "$date"}, 
-						oldest: {$last: "$date"},
-						achievementid: {$first: "$achievementid"}, 
-						fields: {$first: "$fields"},
+						source: {$last: "$source"}, 
+						date: {$last: "$date"}, 
+						oldest: {$first: "$date"},
+						achievementid: {$last: "$achievementid"}, 
+						fields: {$last: "$fields"},
 						awards: {$sum: 1}
 					}
 				},
