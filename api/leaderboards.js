@@ -122,8 +122,8 @@ var leaderboards = module.exports = {
 			options.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
 		}
 
-        if(!options.name) {
-            callback("no name (" + options.name + ")", errorcodes.InvalidName);
+        if(!options.playername) {
+            callback("no name (" + options.playername + ")", errorcodes.InvalidName);
             return;
         }
 
@@ -156,7 +156,7 @@ var leaderboards = module.exports = {
         score.hash = md5(options.publickey + 
 						 options.ip + "." +
                          options.table + "." +
-                         options.name + "." +
+                         options.playername + "." +
                          options.playerid + "." +
                          options.highest + "." +
                          options.source);
