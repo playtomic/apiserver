@@ -67,8 +67,6 @@ module.exports = {
             return output.terminate(payload, response, 1, "Invalid posted data (router.js:72)");
         }
 		
-		console.log(decrypted);
-
         var payload;
 
         try {
