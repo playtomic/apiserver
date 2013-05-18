@@ -35,8 +35,9 @@ module.exports = {
 		NoPlayerId: 501,
 		NoPlayerName: 502,
 		NoAchievement: 503,
-		InvalidAchievement: 505,
-		AlreadyHadAchievement: 506
+		InvalidAchievement: 504,
+		AlreadyHadAchievement: 505,
+		AlreadyHadAchievementNotSaved: 506
 	},
 
     descriptions: {
