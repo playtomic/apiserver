@@ -318,6 +318,8 @@ var achievements = module.exports = {
 					achievement.friends = friends;
 				}
 				
+				delete achievement.achievementkey;
+				
 				results.push(achievement);
 			}
 			
@@ -471,6 +473,7 @@ function achievementIndex(publickey) {
 	for(var i=0; i<achievements.length; i++) {
 		index[achievements[i].achievementid] = achievements[i];
 	}
+	
 	return JSON.parse(JSON.stringify(index));
 }
 
