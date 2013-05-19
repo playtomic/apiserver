@@ -1,4 +1,4 @@
-var db = module.exports = {
+var config = module.exports = {
     mongo: {
         playtomic: parseCredentials(process.env.playtomic || "mongodb://playtomic:playtomic@127.0.0.1:27017/playtomic")
     }
