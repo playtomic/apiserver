@@ -20,35 +20,49 @@ db.open(function (error, cnn) {
 		cnn.createCollection("games", {}, function(err, collection) {   });
 		
 		var i;
+		var done = 0;
+		var errors = 0;
+		
+		function jobdone(error) {
+			done++;
+			if(error) {
+				errors++;
+				console.log(error);
+			}
+				
+			if(done == 24) {
+				console.log("Setup finished with " + errors + " errors");
+				cnn.close();
+			}
+		}
 		
 		for(i=0; i<collections.length; i++) {		
-			cnn.createCollection(collections[i], {}, function(err, collection) {   });
+			cnn.createCollection(collections[i], {}, function(err, collection) {  done++; });
 		}
 		
 		// create indexes
-		cnn.collection("gamevars").createIndex([["publickey", 1], ["name", 1]], function(err, indexName) {});
-		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], function(err, indexName) {});
-		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["date", -1]], function(err, indexName) {});
-		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});
-		cnn.collection("leaderboard_bans").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});
-		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["date", -1]], function(err, indexName) {});
-		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["rating", -1]], function(err, indexName) {});
-		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});
-		cnn.collection("playerlevel_bans").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});								
-		cnn.collection("achievements").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});
-		cnn.collection("achievements_players").createIndex([["publickey", 1], ["playerid", 1]], function(err, indexName) {});
+		cnn.collection("gamevars").createIndex([["publickey", 1], ["name", 1]], jobdone);
+		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], jobdone);
+		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["date", -1]], jobdone);
+		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["hash", 1]], jobdone);
+		cnn.collection("leaderboard_bans").createIndex([["publickey", 1], ["hash", 1]], jobdone);
+		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["date", -1]], jobdone);
+		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["rating", -1]], jobdone);
+		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["hash", 1]], jobdone);
+		cnn.collection("playerlevel_bans").createIndex([["publickey", 1], ["hash", 1]], jobdone);
+		cnn.collection("achievements").createIndex([["publickey", 1], ["hash", 1]], jobdone);
+		cnn.collection("achievements_players").createIndex([["publickey", 1], ["playerid", 1]], jobdone);
 		
 		// remove old testing data
 		for(i = 0; i<collections.length; i++) {
-			cnn.collection(collections[i]).remove({publickey: "testpublickey"}, function() { } );
+			cnn.collection(collections[i]).remove({publickey: "testpublickey"}, jobdone);
 		}
 		
 		// insert testing data
-		cnn.collection("games").save({publickey: "testpublickey", privatekey: "testprivatekey" }, function() { });
-		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #1", achievementkey: "secretkey" }, function() { });
-		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #2", achievementkey: "secretkey2" }, function() { });
-		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #3", achievementkey: "secretkey3" }, function() { });
-		cnn.close();
+		cnn.collection("games").save({publickey: "testpublickey", privatekey: "testprivatekey" }, jobdone);
+		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #1", achievementkey: "secretkey" }, jobdone);
+		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #2", achievementkey: "secretkey2" }, jobdone);
+		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #3", achievementkey: "secretkey3" }, jobdone);
 	}
 
     if(config.mongo.playtomic.username && config.mongo.playtomic.password) {
