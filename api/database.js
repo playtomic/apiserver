@@ -19,7 +19,9 @@ db.open(function (error, cnn) {
 		// create collections
 		cnn.createCollection("games", {}, function(err, collection) {   });
 		
-		for(var i=0; i<collections.length; i++) {		
+		var i;
+		
+		for(i=0; i<collections.length; i++) {		
 			cnn.createCollection(collections[i], {}, function(err, collection) {   });
 		}
 		
@@ -35,6 +37,11 @@ db.open(function (error, cnn) {
 		cnn.collection("playerlevel_bans").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});								
 		cnn.collection("achievements").createIndex([["publickey", 1], ["hash", 1]], function(err, indexName) {});
 		cnn.collection("achievements_players").createIndex([["publickey", 1], ["playerid", 1]], function(err, indexName) {});
+		
+		// remove old testing data
+		for(i = 0; i<collections.length; i++) {
+			cnn.collection(collections[i]).remove({publickey: "testpublickey"}, function() { } );
+		}
 		
 		// insert testing data
 		cnn.collection("games").save({publickey: "testpublickey", privatekey: "testprivatekey" }, function() { });
