@@ -437,7 +437,7 @@ var achievements = module.exports = {
 	                    return;
 	                }
 
-	                callback(null, errorcodes.AlreadyHadAchievement);
+	                callback(null, errorcodes.AlreadyHadAchievementSaved);
 	            });
 
 	            return;
@@ -460,7 +460,7 @@ var achievements = module.exports = {
 	                    return;
 	                }
 
-	                callback(null, errorcodes.AlreadyHadAchievement);
+	                callback(null, errorcodes.AlreadyHadAchievementSaved);
 	            });
 				
 				return;
