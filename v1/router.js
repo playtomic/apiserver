@@ -104,7 +104,7 @@ module.exports = {
                 testcallback(false);
             }
 
-            return output.terminate(payload, response, 1, "Section '" + payload.section + "' has been disabled for this game (router.js:113)");
+            return output.terminate(payload, response, sections[payload.section].sectionCode, "Section '" + payload.section + "' has been disabled for this game (router.js:113)");
         }
 
         if(!sections[payload.section] || !sections[payload.section][payload.action]) {

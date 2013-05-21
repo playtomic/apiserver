@@ -4,6 +4,8 @@ var output = require(__dirname + "/output.js"),
 	testing = process.env.testing || false;
 
 module.exports = {
+	
+	sectionCode: 300,
 
     load: function(payload, request, response, testcallback) {
         var gv = api.gamevars.load(payload.publickey);

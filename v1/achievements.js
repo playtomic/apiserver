@@ -4,6 +4,8 @@ var output = require(__dirname + "/output.js"),
 	testing = process.env.testing || false;
 
 module.exports = {
+	
+	sectionCode: 500,
 
     list: function(payload, request, response, testcallback) {
 		
