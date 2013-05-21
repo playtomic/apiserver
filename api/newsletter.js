@@ -34,6 +34,14 @@ var newsletter = module.exports = {
 				data.merge_vars[x] = options.fields[x];
 			}
 		}
+		
+		if(options.firstname) {
+			data.FNAME = options.firstname;
+		}
+		
+		if(options.lastname) {
+			data.LNAME = options.lastname;
+		}
 
 		var payload = JSON.stringify(data);
 		
