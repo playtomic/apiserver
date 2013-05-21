@@ -57,7 +57,7 @@ var leaderboards = module.exports = {
         // filtering for playerids
 		var playerids = [];
 		
-        if(options.playerid) {
+        if(options.playerid && !options.excludeplayerid) {
             playerids.push(options.playerid);
         }
         
@@ -273,9 +273,11 @@ var leaderboards = module.exports = {
                 query.filter.points = {"$lte": options.points};
             }
 
-            for(var x in options.fields) {
-                query.filter["fields." + x] = options.fields[x];
-            }
+			if(options.filters) {
+	            for(var x in options.filters) {
+	                query.filter["fields." + x] = options.filters[x];
+	            }
+			}
 
             if(options.friendslist) {
                 if(options.friendslist.length > 100) {
@@ -283,9 +285,12 @@ var leaderboards = module.exports = {
                 }
 
                 query.filter.playerid = { $in: options.friendslist }
-
             }
-
+			
+			if(options.source) {
+				query.filter.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
+			}
+			
             var serrorcode = errorcode;
 			
             db.playtomic.leaderboard_scores.count(query, function(error, numscores) {
