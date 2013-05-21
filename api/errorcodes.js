@@ -37,7 +37,11 @@ module.exports = {
 		NoAchievement: 503,
 		InvalidAchievement: 504,
 		AlreadyHadAchievementNotSaved: 505,
-		AlreadyHadAchievementSaved: 506
+		AlreadyHadAchievementSaved: 506,
+		
+		NewsletterDisabled: 600,
+		MailChimpNotConfigured: 601,
+		MailChimpError: 602
 	},
 
     descriptions: {

@@ -5,6 +5,7 @@ var api = module.exports = {
     leaderboards: require(__dirname + "/leaderboards.js"),
     playerlevels: require(__dirname + "/playerlevels.js"),
 	achievements: require(__dirname + "/achievements.js"),
+	newsletter: require(__dirname + "/newsletter.js"),
     database: require(__dirname + "/database.js"),
     utils: require(__dirname + "/utils.js"),
 	geoip: require(__dirname + "/geoip.js"),
