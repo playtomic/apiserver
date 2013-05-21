@@ -36,8 +36,8 @@ module.exports = {
 		NoPlayerName: 502,
 		NoAchievement: 503,
 		InvalidAchievement: 504,
-		AlreadyHadAchievement: 505,
-		AlreadyHadAchievementNotSaved: 506
+		AlreadyHadAchievementNotSaved: 505,
+		AlreadyHadAchievementSaved: 506
 	},
 
     descriptions: {
@@ -75,6 +75,11 @@ module.exports = {
 		"503": "Missing achievement",
 		"504": "Invalid achievement for achievement key",
 		"505": "Player already had the achievement.  You can overwrite old achievements with overwrite=true or save each time the player is awarded with allowduplicates=true",
-		"506": "Player already had the achievement and it was overwritten or a duplicate was saved successfully"
+		"506": "Player already had the achievement and it was overwritten or a duplicate was saved successfully",
+		
+		// Newsletter errors
+		"600": "Newsletter API has been disabled for this game",
+		"601": "MailChimp API key is not configured",
+		"602": "The MailChimp API returned an error"
     }
 };
