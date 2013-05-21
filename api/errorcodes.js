@@ -44,36 +44,36 @@ module.exports = {
         // General Errors
         "0": "No error",
         "1": "General error, this typically means the player is unable to connect",
-        "2": "Invalid game credentials. Make sure you use the keys you set up in your database.",
-        "3": "Request timed out.",
-        "4": "Invalid request.",
+        "2": "Invalid game credentials. Make sure you use the keys you set up in your database",
+        "3": "Request timed out",
+        "4": "Invalid request",
     
         // GeoIP Errors
-        "100": "GeoIP API has been disabled for this game.",
+        "100": "GeoIP API has been disabled for this game",
     
         // Leaderboard Errors
-        "200": "Leaderboard API has been disabled for this game.",
-        "201": "The player's name was not provided when saving a score.",
-		"203": "Player is banned from submitting scores in this game.",
-		"204": "Score was not saved because it was not the player's best.  You can allow players to have more than one score by specifying allowduplicates=true in your save options.",
+        "200": "Leaderboard API has been disabled for this game",
+        "201": "The player's name was not provided when saving a score",
+		"203": "Player is banned from submitting scores in this game",
+		"204": "Score was not saved because it was not the player's best.  You can allow players to have more than one score by specifying allowduplicates=true in your save options",
 		
         // GameVars Errors
-        "300": "GameVars API has been disabled for this game.",
+        "300": "GameVars API has been disabled for this game",
     
         // LevelSharing Errors
-        "400": "Level sharing API has been disabled for this game.",
-        "401": "Invalid rating value (must be 1 - 10).",
-        "402": "Player has already rated that level.",
+        "400": "Level sharing API has been disabled for this game",
+        "401": "Invalid rating value (must be 1 - 10)",
+        "402": "Player has already rated that level",
         "403": "Missing level name",
-        "404": "Missing levelid.",
-        "405": "Level already exists.",
+        "404": "Missing levelid",
+        "405": "Level already exists",
 		
 		// Achievement errors
-		"500": "Achievements API has been disabled for this game.",
+		"500": "Achievements API has been disabled for this game",
 		"501": "Missing playerid",
 		"502": "Missing player name",
-		"503": "Missing achievementid",
-		"504": "Invalid achievementid or achievement key",
+		"503": "Missing achievement",
+		"504": "Invalid achievement for achievement key",
 		"505": "Player already had the achievement.  You can overwrite old achievements with overwrite=true or save each time the player is awarded with allowduplicates=true",
 		"506": "Player already had the achievement and it was overwritten or a duplicate was saved successfully"
     }
