@@ -70,15 +70,21 @@ var leaderboards = module.exports = {
         }
 
         // date mode
+		if(!options.mode) {
+			options.mode = "alltime";
+		} else {
+			options.mode = options.mode.toLowerCase();
+		}
+		
         switch(options.mode) {
             case "today":
                 query.filter.date = {"$gte": datetime.now - (24 * 60 * 60)};
                 break;
-            
+        
            case "last7days":
                query.filter.date = {"$gte": (datetime.now - (7 * 24 * 60 * 60))};
                 break;
-            
+        
             case "last30days":
                 query.filter.date = {"$gte": (datetime.now - (30 * 24 * 60 * 60))};
                 break;

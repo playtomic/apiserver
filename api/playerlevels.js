@@ -12,6 +12,8 @@ var config = require(__dirname + "/config.js"),
 var playerlevels = module.exports = {
 
     list:function (options, callback) {
+		
+		// TODO: would be cool if you could pass vote and score min/maxes as filters
 
         var query = {
 
@@ -28,6 +30,12 @@ var playerlevels = module.exports = {
         for(var key in options.filters) {
             query.filter["fields." + key] = options.filters[key];
         }
+		
+		if(!options.mode) {
+			options.mode = "popular";
+		} else {
+			options.mode = options.mode.toLowerCase();
+		}
 
         if(options.mode != "newest") {
             var datemin = options.datemin;

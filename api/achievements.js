@@ -79,7 +79,12 @@ var achievements = module.exports = {
         }
 		
 		// modes
-        // date mode
+		if(!options.mode) {
+			options.mode = "alltime";
+		} else {
+			options.mode = options.mode.toLowerCase();
+		}
+
         switch(options.mode) {
             case "today":
                 query.filter.date = {"$gte": datetime.now - (24 * 60 * 60)};
