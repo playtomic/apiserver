@@ -7,75 +7,23 @@ var testgame = require(__dirname + "/testgame.js"),
 
 describe("leaderboards", function() {
 
-    var populated = 0;
-    var names = ["fred", "harry", "michael", "sally", "peter", "michelle", "jules", "alicia", "robert", "paul"].sort();
-    var ids = [1,2,3,4,5,6,7,8,9,10];
-
-    
-    // create the test data
-    beforeEach(function(done) {
-        
-        if(names.length == 0) {
-            return done();
-        }
-
-        var score = {
-            publickey: testgame.publickey,
-            source: "localhost",
-            name: null,
-            points: 0,
-            playerid: "",
-            fields: {}
+    it("Get highest 10 scores", function(done) {
+		
+		var options = {
+            table: "scores",
+            highest: true,
+            perpage: 10,
+            page: 1,
+            global: true,
+            publickey: testgame.publickey
         };
 
-        db.playtomic.leaderboard_scores.remove({filter: {publickey: testgame.publickey}}, function(error) {
-            if(error) {
-                throw(error);
-            }
-            db.playtomic.leaderboard_bans.remove({filter: {publickey: testgame.publickey}}, function(error) {
-                if(error) {
-                    throw(error);
-                }
-                nextScore();
-            });
-        });
-
-        function nextScore() {
-
-            // high score
-            delete(score._id);
-            score.name = names.pop();
-            score.playerid = ids.pop();
-            score.points = 20000 + (names.length * 1000);
-            score.table = "scores";
-
-            leaderboards.save(score, function(error, item){
-                populated++;
-
-                if(names.length > 0) {
-                    return nextScore();
-                } else {
-                    return done();
-                }
-            });
-        }
-    });
-
-    it("Get highest 10 scores", function(done) {
-
-        leaderboards.list({
-                                table: "scores",
-                                highest: true,
-                                perpage: 10,
-                                page: 1,
-                                global: true,
-                                publickey: testgame.publickey
-                            }, function(error, errorcode, numscores, scores) {
+        leaderboards.list(options, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores > 0, true);
             assert.equal(scores.length > 0, true);
-            assert.equal(scores[0].name, "sally");
+            assert.equal(scores[0].playername, "sally");
             done();
         });
     });
@@ -96,13 +44,13 @@ describe("leaderboards", function() {
             assert.equal(errorcode, 0);
             assert.equal(numscores > 0, true);
             assert.equal(scores.length > 0, true);
-            assert.equal(scores[0].name, "alicia");
+            assert.equal(scores[0].playername, "alicia");
 
             // test the caching
             leaderboards.list(options, function(error, errorcode, numscores, scores) {
 
                 for(var i=0; i<scores.length; i++) {
-                    assert.equal(scores[i].name, oldscores[i].name);
+                    assert.equal(scores[i].playername, oldscores[i].playername);
                 }
 
                 done();
@@ -111,80 +59,83 @@ describe("leaderboards", function() {
     });
         
     it("Get lowest with filters", function(done) {
-        leaderboards.list({
-                                table: "scores",
-                                lowest: true,
-                                perpage: 10,
-                                page: 1,
-                                publickey: testgame.publickey
-                            }, function(error, errorcode, numscores, scores) {
+		var options = {
+			table: "scores",
+            lowest: true,
+            perpage: 10,
+            page: 1,
+            publickey: testgame.publickey
+		};
+			
+        leaderboards.list(options, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores > 0, true);
             assert.equal(scores.length > 0, true);
-            assert.equal(scores[0].name, "alicia");
+            assert.equal(scores[0].playername, "alicia");
             done();
         });
     });
     
     it("Get highest with friend filter", function(done) {
-        leaderboards.list({
-                                table: "scores",
-                                highest: true,
-                                perpage: 10,
-                                page: 1,
-                                publickey: testgame.publickey,
-                                friendslist: [1, 2, 3, 4]
-                            }, function(error, errorcode, numscores, scores) {
+		var options = {
+            table: "scores",
+            highest: true,
+            perpage: 10,
+            page: 1,
+            publickey: testgame.publickey,
+            friendslist: ["1", "2", "3", "4"]
+        };
+		
+        leaderboards.list(options, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores, 4);
             assert.equal(scores.length, 4);
-            assert.equal(scores[0].name, "jules");
+            assert.equal(scores[0].playername, "jules");
             done();
         });
     });
 
     it("SaveAndList a new low score", function(done) {
+		
+		var options = {
+            // save params
+            source: "localhost",
+            points: 10000,
+            playerid: "1",
+            fields: {},
+            playername: "ben",
+            // list params
+            table: "scores",
+            lowest: true,
+            perpage: 2,
+            publickey: testgame.publickey
+        };
 
-        leaderboards.saveAndList({
-
-                                    // save params
-                                    source: "localhost",
-                                    points: 10000,
-                                    playerid: "",
-                                    fields: {},
-                                    name: "ben",
-
-                                    // list params
-                                    table: "scores",
-                                    lowest: true,
-                                    perpage: 2,
-                                    publickey: testgame.publickey
-
-
-                                }, function(error, errorcode, numscores, scores) {
+        leaderboards.saveAndList(options, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
-            assert.equal(numscores, 11);
+            assert.equal(numscores, 2);
             assert.equal(scores.length, 2);
             assert.equal(scores[0].points, 10000);
-            assert.equal(scores[0].name, "ben");
+            assert.equal(scores[0].playername, "ben");
             done();
         });
     });
 
     it("SaveAndList a new high score", function(done) {
-        leaderboards.saveAndList({
+		
+		var options = {
 
             // save params
             source: "localhost",
             points: 12000,
-            playerid: "1",
+            playerid: "11",
             fields: {
                 age: 1
             },
-            name: "isabella",
+            playername: "isabella",
 
             // list params
             table: "scores",
@@ -194,7 +145,9 @@ describe("leaderboards", function() {
             filters: {
                 age: 1
             }
-        }, function(error, errorcode, numscores, scores) {
+        };
+		
+        leaderboards.saveAndList(options, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores, 1);
@@ -203,10 +156,10 @@ describe("leaderboards", function() {
             // one of the scores should be the saved one
             for(var i=0; i<10; i++) {
 
-                if(scores[i].name == "isabella") {
+                if(scores[i].playername == "isabella") {
                     assert.equal(scores[i].points, 12000);
                     assert.equal(scores[i].fields.age, 1);
-                    assert.equal(scores[i].name, "isabella");
+                    assert.equal(scores[i].playername, "isabella");
                     done();
                     return;
                 }
@@ -256,7 +209,7 @@ describe("leaderboards", function() {
         var payload = {
             publickey: testgame.publickey,
             source: "localhost",
-            name: "dummy",
+            playername: "dummy",
             points: 10,
             table: "scores",
             fields: {}
@@ -327,18 +280,18 @@ describe("leaderboards", function() {
             // save params
             source: "localhost",
             points: 12000,
-            playerid: 1,
+            playerid: "11",
             fields: {
                 age: 1
             },
-            name: "isabella",
+            playername: "isabella",
 
             // list params
             table: "scores",
             highest: true,
             perpage: 7,
             excludeplayerid: true,
-            publickey: testgame.publickey
+            publickey: testgame.publickey,
         };
 
         v1.saveandlist(payload, testgame.request, testgame.response, function(error, output) {
@@ -355,8 +308,8 @@ describe("leaderboards", function() {
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
-            assert.equal(json.scores.length, 2);
-            assert.equal(json.numscores, 2);
+            assert.equal(json.scores.length, 7);
+            assert.equal(json.numscores, 14);
             done();
         });
     });

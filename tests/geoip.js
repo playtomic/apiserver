@@ -4,22 +4,28 @@ var geoip = require("geoip-native"),
     assert = require("assert");
 
 describe("geoip", function() {
-
-    // wait for the geoip to finish reading the data
+	
     beforeEach(function(done) {
 
-        testgame.request.ip = "62.163.200.241";
-
-        function f(){
+		// wait for db setup to complete
+		function dbready() {
+			if(!db.ready) {
+				return setTimeout(dbready, 100);
+			}
+			
+	        function geoipready(){
             
-            if(!geoip.ready) {
-                return setTimeout(f, 500);
-            }
+	            if(!geoip.ready) {
+	                return setTimeout(geoipready, 500);
+	            }
 
-            return done();
-        }
+	            return done();
+	        }
 
-        f();
+	        geoipready();
+		}
+		
+		dbready();
     });
      
     it("Expected returned value", function() {

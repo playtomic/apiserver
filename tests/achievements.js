@@ -10,68 +10,36 @@ describe("achievements", function() {
     var ready = false;
 	var achdata;
     
-    // set up some achievements
     beforeEach(function(done) {
-		
+
 		if(ready) {
 			return done();
 		}
 		
-		// delete the old achievements
-        db.playtomic.achievements.remove({filter: {publickey: testgame.publickey}}, function(error) {
+		// wait for db setup to complete
+		function dbready() {
+			if(!db.ready) {
+				return setTimeout(dbready, 100);
+			}
 			
-            if(error) {
-                throw(error);
-            }
+			// wait for the acheivements cache to reload
+			achievements.ready = false;
+		
+	        function achready() {
 			
-            db.playtomic.achievements_players.remove({filter: {publickey: testgame.publickey}}, function(error) {
-                if(error) {
-                    throw(error);
-                }
-				
-				// set up new achievements
-				db.playtomic.achievements.insert({ doc: {
-					publickey: testgame.publickey,
-					achievement: "Super Mega Achievement #1",
-					achievementkey: "secretkey",
-					achievementnum: 1
-				}}, function(error) { 
-				
-					db.playtomic.achievements.insert({doc: {
-						publickey: testgame.publickey,
-						achievement: "Super Mega Achievement #2",
-						achievementkey: "secretkey2",
-						achievementnum: 2
-					}}, function(error) { 
-					
-						db.playtomic.achievements.insert({doc: {
-							publickey: testgame.publickey,
-							achievement: "Super Mega Achievement #3",
-							achievementkey: "secretkey3",
-							achievementnum: 3
-						}}, function(error) { 
-						
-							// wait for the acheivements cache to reload
-							achievements.ready = false;
-							
-					        function f() {
-            
-					            if(!achievements.ready) {
-					                return setTimeout(f, 100);
-					            }
-								
-								ready = true;
-								achdata = achievements.data();
-					            done();
-					        }
-        
-					        f();
-						
-						});
-					});
-				});
-            });
-        });
+	            if(!achievements.ready) {
+	                return setTimeout(achready, 100);
+	            }
+			
+				ready = true;
+				achdata = achievements.data();
+	            done();
+	        }
+		
+			achready();
+		}
+		
+		dbready();
     });
      
     it("Achievements load correctly", function() {
@@ -97,9 +65,10 @@ describe("achievements", function() {
 			assert.equal(error, null);
 			assert.equal(errorcode, 0);
 
+			// saving a second time fails
 			achievements.save(achievement, function(error, errorcode) {
-	            assert.equal(error, null);
-	            assert.equal(errorcode, errorcodes.AlreadyHadAchievement);
+	            assert.notEqual(error, null);
+	            assert.equal(errorcode, errorcodes.AlreadyHadAchievementNotSaved);
 				
 				// force a delay for the next save
 				setTimeout(done, 3000);
@@ -223,7 +192,8 @@ describe("achievements", function() {
 			assert.equal(achievements[2].hasOwnProperty("player"), false);
 			assert.equal(achievements[0].player.playername, "ben");
 			assert.equal(achievements[0].player.playerid, "1");	
-			done();
+			
+			setTimeout(done, 3000);
 		});
     });
 	
@@ -570,8 +540,8 @@ describe("achievements", function() {
         var payload = {
 			achievement: "Super Mega Achievement #2",
 			achievementkey: "secretkey2",
-			playerid: "3",
-			playername: "michelle",
+			playerid: "4",
+			playername: "ozdy",
 			fields: { 
 				newer: true
 			},

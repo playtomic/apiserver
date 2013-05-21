@@ -3,6 +3,20 @@ var testgame = require(__dirname + "/testgame.js"),
     assert = require("assert");
 
 describe("output", function() {
+	
+    beforeEach(function(done) {
+
+		// wait for db setup to complete
+		function dbready() {
+			if(!db.ready) {
+				return setTimeout(dbready, 100);
+			}
+			
+			done();
+		}
+		
+		dbready();
+    });
 
     it("terminate gives expected response", function() {
         var rrr = v1.terminate(testgame.payload, testgame.response, 1, "an error message");

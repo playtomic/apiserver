@@ -16,53 +16,128 @@ db.open(function (error, cnn) {
 	
 	function setup() {
 		
-		// create collections
-		cnn.createCollection("games", {}, function(err, collection) {   });
+		var jobs = [],
+			collectionadd = 0,
+			collectionclean = 0;
 		
-		var i;
-		var done = 0;
-		var errors = 0;
-		
-		function jobdone(error) {
-			done++;
-			if(error) {
-				errors++;
-				console.log(error);
-			}
-				
-			if(done == 24) {
-				console.log("Setup finished with " + errors + " errors");
-				cnn.close();
-			}
-		}
-		
-		for(i=0; i<collections.length; i++) {		
-			cnn.createCollection(collections[i], {}, function(err, collection) {  done++; });
-		}
+		// creating collections
+		collections.forEach(function(collection) {
+			jobs.push(function() { 
+				cnn.createCollection(collection, {}, next);
+			});
+		});	
 		
 		// create indexes
-		cnn.collection("gamevars").createIndex([["publickey", 1], ["name", 1]], jobdone);
-		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], jobdone);
-		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["date", -1]], jobdone);
-		cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["hash", 1]], jobdone);
-		cnn.collection("leaderboard_bans").createIndex([["publickey", 1], ["hash", 1]], jobdone);
-		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["date", -1]], jobdone);
-		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["rating", -1]], jobdone);
-		cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["hash", 1]], jobdone);
-		cnn.collection("playerlevel_bans").createIndex([["publickey", 1], ["hash", 1]], jobdone);
-		cnn.collection("achievements").createIndex([["publickey", 1], ["hash", 1]], jobdone);
-		cnn.collection("achievements_players").createIndex([["publickey", 1], ["playerid", 1]], jobdone);
+		jobs.push(function() { 
+			cnn.collection("gamevars").createIndex([["publickey", 1], ["name", 1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["date", -1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["hash", 1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("leaderboard_bans").createIndex([["publickey", 1], ["hash", 1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["date", -1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["rating", -1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("playerlevel_levels").createIndex([["publickey", 1], ["hash", 1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("playerlevel_bans").createIndex([["publickey", 1], ["hash", 1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("achievements").createIndex([["publickey", 1], ["hash", 1]], next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("achievements_players").createIndex([["publickey", 1], ["playerid", 1]], next); 
+		});
 		
 		// remove old testing data
-		for(i = 0; i<collections.length; i++) {
-			cnn.collection(collections[i]).remove({publickey: "testpublickey"}, jobdone);
-		}
+		collections.forEach(function(collection) {
+			jobs.push(function() { 
+				cnn.collection(collection).remove({publickey: "testpublickey"}, next);
+			});
+		});
 		
 		// insert testing data
-		cnn.collection("games").save({publickey: "testpublickey", privatekey: "testprivatekey" }, jobdone);
-		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #1", achievementkey: "secretkey" }, jobdone);
-		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #2", achievementkey: "secretkey2" }, jobdone);
-		cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #3", achievementkey: "secretkey3" }, jobdone);
+		jobs.push(function() { 
+			cnn.collection("games").save({publickey: "testpublickey", privatekey: "testprivatekey" }, next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #1", achievementkey: "secretkey" }, next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #2", achievementkey: "secretkey2" }, next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("achievements").save({publickey: "testpublickey", achievement: "Super Mega Achievement #3", achievementkey: "secretkey3" }, next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("gamevars").save({publickey: "testpublickey", name: "testvar1", value: "testvalue1" }, next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("gamevars").save({publickey: "testpublickey", name: "testvar2", value: "testvalue2" }, next); 
+		});
+		jobs.push(function() { 
+			cnn.collection("gamevars").save({publickey: "testpublickey", name: "testvar3", value: "testvalue3 and the final gamevar" }, next); 
+		});
+		
+	    var scores = [
+			{playername: "alicia", playerid: 1, points: 21000},
+			{playername: "fred", playerid: 2, points: 22000}, 
+			{playername: "harry", playerid: 3, points: 23000},
+			{playername: "jules", playerid: 4, points: 24000},
+			{playername: "michael", playerid: 5, points: 25000},
+			{playername: "michelle", playerid: 6, points: 26000},
+			{playername: "paul", playerid: 7, points: 27000},
+			{playername: "peter", playerid: 8, points: 28000},
+			{playername: "robert", playerid: 9, points: 29000},
+			{playername: "sally", playerid: 10, points: 30000}
+		];
+		
+		scores.forEach(function(scoredata) {
+			jobs.push(function() { 
+				
+		        var score = {
+		            publickey: "testpublickey",
+		            source: "localhost",
+					playername: scoredata.playername,
+		            points: scoredata.points,
+		            playerid: scoredata.playerid.toString(),
+					table: "scores",
+		            fields: {}
+		        };
+				
+				cnn.collection("leaderboard_scores").save(score, next); 
+			});
+		});
+
+
+		function next(error) {
+			
+			if(error) {
+				console.log(error);
+			}
+			
+			if(jobs.length == 0) {
+				db.ready = true;
+				cnn.close();
+			} else { 
+				jobs.shift()();
+			}
+		}
+		
+		next();
 	}
 
     if(config.mongo.playtomic.username && config.mongo.playtomic.password) {
@@ -87,5 +162,6 @@ db.poolSize = 20;
 db.killEnabled = true;
 db.setDatabases(config.mongo);
 db.playtomic.collections(collections);
+db.ready = false;
 
 module.exports = db;

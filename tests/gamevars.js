@@ -16,43 +16,31 @@ describe("gamevars", function() {
             return done();
         }
 		
-        db.playtomic.gamevars.remove({filter: {publickey: testgame.publickey}}, function(error) {
-            if(error) {
-                throw(error);
-            }
+		// wait for db setup to complete
+		function dbready() {
+			if(!db.ready) {
+				return setTimeout(dbready, 100);
+			}
 			
-            db.playtomic.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar1", value: "testvalue1"}}, function(error, obj) {
-				if(error) {
-					throw(error);
-				}
-				
-	            db.playtomic.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar2", value: "testvalue2"}}, function(error, obj) {
-					if(error) {
-						throw(error);
-					}
-					
-		            db.playtomic.gamevars.insert({doc: {publickey: testgame.publickey, name: "testvar3", value: "testvalue3 and the final gamevar"}}, function(error, obj) {
-						if(error) {
-							throw(error);
-						}
-					});
-				});
-			});
-        });
-
-        function f() {
-
-            if(!gamevars.ready) {
-                return setTimeout(f, 100);
-            }
-
-            gvdata = gamevars.data;
-            testdata = gvdata[testgame.publickey] || [];
-            return done();
-        }
-        
-        f();
-    });
+			// wait for the gamevars cache to reload
+			gamevars.ready = false;
+		
+	        function gamevarsready() {
+			
+	            if(!gamevars.ready) {
+	                return setTimeout(gamevarsready, 100);
+	            }
+			
+				gvdata = gamevars.data;
+				testdata = gamevars.load(testgame.publickey) || {};
+	            done();
+	        }
+		
+			gamevarsready();
+		}
+		
+		dbready();
+	});
      
     it("Gamevars load correctly", function() {
         assert.notEqual(Object.keys(gvdata).length, 0);

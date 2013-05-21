@@ -9,24 +9,29 @@ describe("games", function() {
     
     // wait for the games to load
     beforeEach(function(done) {
-		
-		if(gvdata) {
-			done();
-			return;
-		}
-
-        function f() {
+				
+		// wait for db setup to complete
+		function dbready() {
+			
+			if(!db.ready) {
+				return setTimeout(dbready, 100);
+			}
+			
+	        function gamesready() {
             
-            if(!games.ready) {
-                return setTimeout(f, 100);
-            }
+	            if(!games.ready) {
+	                return setTimeout(gamesready, 100);
+	            }
 
-            gvdata = games.data();
-            game = gvdata[testgame.publickey];
-            done();
-        }
+	            gvdata = games.data();
+	            game = gvdata[testgame.publickey];
+	            done();
+	        }
         
-        f();
+	        gamesready();
+		}
+		
+		dbready();
     });
      
     it("Games load correctly", function() {

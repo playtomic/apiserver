@@ -7,6 +7,20 @@ var games = require(__dirname + "/../api/games.js"),
     v1 = require(__dirname + "/../v1/playerlevels.js");
 
 describe("playerlevels", function() {
+	
+    beforeEach(function(done) {
+
+		// wait for db setup to complete
+		function dbready() {
+			if(!db.ready) {
+				return setTimeout(dbready, 100);
+			}
+			
+			done();
+		}
+		
+		dbready();
+    });
 
     var level;
 
