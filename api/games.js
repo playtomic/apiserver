@@ -53,7 +53,7 @@ if(process.env.testing) {
                 return setTimeout(refresh, 1000);
             }
 			
-			var keys = ["enabled", "leaderboards", "playerlevels", "gamevars", "geoip", "achievements"];
+			var keys = ["enabled", "leaderboards", "playerlevels", "gamevars", "geoip", "achievements", "newsletter"];
 
             for(var i=0; i<credentials.length; i++) {
                 var publickey = credentials[i].publickey;

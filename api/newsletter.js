@@ -1,6 +1,14 @@
 var https = require("https"),
 	errorcodes = require(__dirname + "/errorcodes.js").errorcodes,
 	config = require(__dirname + "/config.js");
+	
+// test configuration for client apis, note that this mailing list
+// is exclusively for testing the Playtomic api 
+if(process.env.testing) {
+	config.mailchimp.apikey = "194edfd523676481bbf6011499ed8979-us7";
+	config.mailchimp.listid = "df7f7ae1e0";
+	config.mailchimp.apiurl = "us7.api.mailchimp.com";
+}	
 
 var newsletter = module.exports = {
 	

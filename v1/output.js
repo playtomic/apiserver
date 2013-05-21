@@ -17,6 +17,7 @@ module.exports = {
         var jstr = "{\"success\": false, \"errorcode\": " + errorcode + ", \"exceptionmessage\": \"" + exceptionmessage + "\"}";
         response.writeHead(200, JSON_HEADER);
         response.end(jstr);
+		//console.log(jstr);
         return jstr;
     },
 

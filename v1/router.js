@@ -9,7 +9,8 @@ var url = require("url"),
         geoip: require(__dirname + "/geoip.js"),
         leaderboards: require(__dirname + "/leaderboards.js"),
         playerlevels: require(__dirname + "/playerlevels.js"),
-		achievements: require(__dirname + "/achievements.js")
+		achievements: require(__dirname + "/achievements.js"),
+		newsletter: require(__dirname + "/newsletter.js")
     };
 
 module.exports = {

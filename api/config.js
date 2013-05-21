@@ -17,7 +17,7 @@ function parseAPIUrl() {
 		return null;
 	}
 	
-	var apiurl = process.env.mailchimp || "194edfd523676481bbf6011499ed8979-us7";
+	var apiurl = process.env.mailchimp;
 	var dc = apikey.substring(apikey.indexOf("-") + 1);
 	return dc + ".api.mailchimp.com";
 }
