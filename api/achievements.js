@@ -361,6 +361,12 @@ var achievements = module.exports = {
 
 		// validate the achievement
 		var gameachievements = achievementlist[options.publickey];
+		
+		if(!gameachievements) {
+			callback("Game has no achievements configured (api.achievements.save:366"), errorcodes.NoAchievement);
+			return;
+		}
+		
 		var found = false;
 		var correct = false;
 		var achievementid;
