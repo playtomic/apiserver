@@ -13,7 +13,7 @@ describe("achievements", function() {
     beforeEach(function(done) {
 
 		if(ready) {
-			return done();
+			return setTimeout(done, 3000);
 		}
 		
 		// wait for db setup to complete
@@ -71,7 +71,7 @@ describe("achievements", function() {
 	            assert.equal(errorcode, errorcodes.AlreadyHadAchievementNotSaved);
 				
 				// force a delay for the next save
-				setTimeout(done, 3000);
+				done();
 			});
 		});
     });
@@ -193,7 +193,7 @@ describe("achievements", function() {
 			assert.equal(achievements[0].player.playername, "ben");
 			assert.equal(achievements[0].player.playerid, "1");	
 			
-			setTimeout(done, 3000);
+			done();
 		});
     });
 	
@@ -278,7 +278,7 @@ describe("achievements", function() {
 			assert.equal(achievements[1].friends[0].playername, "michelle");
 			
 			// we need the next test to have a delay for different times
-			setTimeout(done, 3000);
+			done();
 		});
     });
 	
