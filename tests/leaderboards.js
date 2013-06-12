@@ -93,6 +93,7 @@ describe("leaderboards", function() {
             assert.equal(numscores, 4);
             assert.equal(scores.length, 4);
             assert.equal(scores[0].playername, "jules");
+            assert.equal(scores[0].rank, 1);
             done();
         });
     });
@@ -120,10 +121,11 @@ describe("leaderboards", function() {
             assert.equal(scores.length, 2);
             assert.equal(scores[0].points, 10000);
             assert.equal(scores[0].playername, "ben");
+            assert.equal(scores[0].rank, 1);
             done();
         });
     });
-
+	
     it("SaveAndList a new high score", function(done) {
 		
 		var options = {
@@ -161,14 +163,69 @@ describe("leaderboards", function() {
                     assert.equal(scores[i].fields.age, 1);
                     assert.equal(scores[i].playername, "isabella");
                     done();
-                    return;
+					return;
                 }
             }
-
-            assert.equal()
-            done();
+			
+			assert.equal(1, 2);
+			done();
         });
     });
+	
+	it("List ranks match saveAndList", function(done) {
+		
+		var options = {
+            // save params
+            source: "localhost",
+            points: 26500,
+            playername: "random " + Math.random(),
+			allowduplicates: true,
+            // list params
+            table: "scores",
+			highest: true,
+            perpage: 3,
+            publickey: testgame.publickey
+        };
+
+        leaderboards.saveAndList(options, function(error, errorcode, numscores, scores) {
+			
+            assert.equal(error, null);
+            assert.equal(errorcode, 0);
+            assert.equal(numscores, 13);
+			assert.equal(scores.length, 3);			
+			assert.equal(scores[0].rank, 4);
+			assert.equal(scores[1].rank, 5);
+			assert.equal(scores[1].submitted, true);
+			assert.equal(scores[2].rank, 6);
+
+			options = {
+	            table: "scores",
+				highest: true,
+	            perpage: 20,
+	            publickey: testgame.publickey
+			}
+							
+			leaderboards.list(options, function(error2, errorcode2, numscores2, scores2) {
+								
+	            assert.equal(error2, null);
+	            assert.equal(errorcode2, 0);
+	            assert.equal(numscores, numscores2);
+				assert.equal(scores2.length, 13);
+
+				// confirm the 3 scores we returned before match and are
+				// really in the right rank and positions
+				for(var i=3; i<6; i++)
+				{
+					assert.equal(scores[i - 3].scoreid, scores2[i].scoreid);
+					assert.equal(scores[i - 3].rank, scores2[i].rank);
+					assert.equal(scores[i - 3].playername, scores2[i].playername);
+					assert.equal(scores[i - 3].points, scores2[i].points);
+				}
+				
+				done();
+			});        
+        });
+	});
 
     it("V1 JSON structure (list)", function(done) {
 
@@ -195,10 +252,10 @@ describe("leaderboards", function() {
             }
 
             assert.notEqual(json, null);
-            assert.equal(json.numscores, 12);
+            assert.equal(json.numscores, 13);
             assert.equal(json.success, true);
             assert.equal(json.scores.length <= payload.perpage, true);
-            assert.equal(json.scores.length, 2);
+            assert.equal(json.scores.length, 3);
             assert.equal(json.scores[1].rank, 12);
             done();
         });
@@ -309,7 +366,7 @@ describe("leaderboards", function() {
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
             assert.equal(json.scores.length, 7);
-            assert.equal(json.numscores, 14);
+            assert.equal(json.numscores, 15);
             done();
         });
     });
