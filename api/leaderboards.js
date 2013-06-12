@@ -110,7 +110,7 @@ var leaderboards = module.exports = {
                 scores = [];
             }
 
-            callback(null, errorcodes.NoError, numscores, clean(scores, query.skip));
+            callback(null, errorcodes.NoError, numscores, clean(scores, query.skip + 1));
         });
     },
 
@@ -181,7 +181,7 @@ var leaderboards = module.exports = {
                     return;
                 }
 
-                callback(null, errorcodes.NoError);
+                callback(null, errorcodes.NoError, item._id);
             });
 
             return;
@@ -210,7 +210,7 @@ var leaderboards = module.exports = {
                         return;
                     }
 
-                    callback(null, errorcodes.NoError);
+                    callback(null, errorcodes.NoError, item._id);
                 });
 
                 return;
@@ -235,7 +235,7 @@ var leaderboards = module.exports = {
                         return;
                     }
 
-                    callback(null, errorcodes.NoError);
+                    callback(null, errorcodes.NoError, item._id);
                 });
             } else {
                 callback(null, errorcodes.NotBestScore);
@@ -245,7 +245,7 @@ var leaderboards = module.exports = {
 
     saveAndList: function(options, callback) {
 		
-        leaderboards.save(options, function(error, errorcode) {
+        leaderboards.save(options, function(error, errorcode, insertedid) {
 
             if(error) {
                 callback(error + " (api.leaderboards.saveAndList:232)", errorcode);
@@ -300,9 +300,9 @@ var leaderboards = module.exports = {
                     return;
                 }
 
-                var page = Math.floor(numscores / options.perpage);
-                var rank = page * options.perpage;
-				options.page = page + 1;
+				options.page = Math.ceil(numscores / options.perpage) ;
+				
+				console.log("save and list", options.page, numscores, options.perpage)
 				
                 leaderboards.list(options, function(error, errorcode, numscores, scores) {
 
@@ -314,13 +314,17 @@ var leaderboards = module.exports = {
                     if(serrorcode > 0) {
                         errorcode = serrorcode;
                     }
+					
+					for(var i=0; i<scores.length; i++)
+					{
+						if(scores[i].scoreid == insertedid)
+						{
+							scores[i].submitted = true;
+							break;
+						}
+					}
 
-                    // clean up scores
-                    if(!scores) {
-                        scores = [];
-                    }
-
-                    callback(null, errorcode, numscores, clean(scores, rank));
+                    callback(null, errorcode, numscores, scores);
                 })
             });
         });
@@ -345,8 +349,8 @@ function clean(scores, baserank) {
             }
         }
 
-        score.rank = baserank + i + 1;
-        score.scoreid = score._id;
+        score.rank = baserank + i;
+        score.scoreid = score._id.toString();
 		score.rdate = utils.friendlyDate(utils.fromTimestamp(score.date));
         delete score._id;
         delete score.hash;
