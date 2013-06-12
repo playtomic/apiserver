@@ -301,9 +301,7 @@ var leaderboards = module.exports = {
                 }
 
 				options.page = Math.ceil(numscores / options.perpage) ;
-				
-				console.log("save and list", options.page, numscores, options.perpage)
-				
+
                 leaderboards.list(options, function(error, errorcode, numscores, scores) {
 
                     if(error) {
