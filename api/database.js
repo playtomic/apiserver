@@ -1,4 +1,5 @@
-var config = require(__dirname + "/config.js");
+var config = require(__dirname + "/config.js"),
+datetime = require(__dirname + "/datetime.js")
 
 // setup
 var mongodb = require("mongodb");
@@ -106,6 +107,7 @@ db.open(function (error, cnn) {
 		];
 		
 		scores.forEach(function(scoredata) {
+
 			jobs.push(function() { 
 				
 		        var score = {
@@ -115,6 +117,7 @@ db.open(function (error, cnn) {
 		            points: scoredata.points,
 		            playerid: scoredata.playerid.toString(),
 					table: "scores",
+					date: datetime.now,
 		            fields: {}
 		        };
 				
