@@ -757,7 +757,7 @@ var cache = {
 
         var database = databases[databasename];
         var key = database.name + ":" + database.collectionname + ":" + operation + ":" + JSON.stringify(options);
-        return localcache[key] ? localcache[key].data : null;
+        return localcache[key] ? JSON.parse(localcache[key].data) : null;
     },
 
     set: function(databasename, collectionname, operation, options, obj) {
@@ -768,7 +768,7 @@ var cache = {
 
         var database = databases[databasename];
         var key = database.name + ":" + database.collectionname + ":" + operation + ":" + JSON.stringify(options);
-        localcache[key] = { data: obj, time: options.cachetime || db.defaultCacheTime};
+        localcache[key] = { data: JSON.stringify(obj), time: options.cachetime || db.defaultCacheTime};
     }
 }
 
