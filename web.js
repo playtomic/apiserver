@@ -1,7 +1,8 @@
 var express = require("express"),
     querystring = require("querystring"),
     v1 = require(__dirname + "/v1/router.js"),
-	database = require(__dirname + "/api/database.js"); // to trigger the setup
+	database = require(__dirname + "/api/database.js"), // to trigger the setup
+	ping = require(__dirname + "/api/ping.js"); // to keep the app awake
 	
 var app = express.createServer();
 
