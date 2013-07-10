@@ -17,7 +17,7 @@ function parseAPIUrl() {
 		return null;
 	}
 	
-	var apiurl = process.env.mailchimp;
+	var apikey = process.env.mailchimp;
 	var dc = apikey.substring(apikey.indexOf("-") + 1);
 	return dc + ".api.mailchimp.com";
 }
