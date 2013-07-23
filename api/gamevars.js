@@ -44,6 +44,11 @@ var gamevars = module.exports = {
             for(var i=0; i<vars.length; i++) {
 				
 				var publickey = vars[i].publickey;
+				
+				if(!publickey) {
+					console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
+					continue;
+				}
 
                 var gamevar = {
                     name: vars[i].name,
