@@ -8,9 +8,7 @@ var app = express.createServer();
 
 // Basic request preparation and stuffing post data into req
 var prepareRequests = function(request, response, next) {
-	
-	console.log(request.url);
-
+    
     request.ip = request.headers["x-forwarded-for"] || request.connection.remoteAddress;
 
     // cross-origin request headers

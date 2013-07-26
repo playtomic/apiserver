@@ -29,8 +29,6 @@ var http = require("http"),
 	
 	setInterval(function() {
 		
-		console.log("PING", apiurl);
-	
 		var req = protocol.request(options, function(response) { 
 			response.on("error", function(error) { });
 			response.on("data", function(error) { });
