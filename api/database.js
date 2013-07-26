@@ -32,15 +32,23 @@ db.open(function (error, cnn) {
 		jobs.push(function() { 
 			cnn.collection("gamevars").createIndex([["publickey", 1], ["name", 1]], next); 
 		});
-		jobs.push(function() { 
-			cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], next); 
-		});
-		jobs.push(function() { 
-			cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["date", -1]], next); 
-		});
+
 		jobs.push(function() { 
 			cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["hash", 1]], next); 
 		});
+
+		// advanced users may override the default index 
+		// creation for leaderboards that are using their 
+		// own exact-match indexing
+		if(process.env.disable_default_score_indexes == null) {
+			jobs.push(function() { 
+				cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], next); 
+			});
+			jobs.push(function() { 
+				cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["date", -1]], next); 
+			});
+		}
+
 		jobs.push(function() { 
 			cnn.collection("leaderboard_bans").createIndex([["publickey", 1], ["hash", 1]], next); 
 		});
