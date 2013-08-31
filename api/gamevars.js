@@ -30,7 +30,16 @@ var gamevars = module.exports = {
             return setTimeout(refresh, 1000);
         }
 
-        db.playtomic.gamevars.get({}, function(error, vars)
+	var query = {
+            
+            filter: {
+                publickey: options.publickey,
+                table: options.table
+            },
+   
+        };
+	
+        db.playtomic.gamevars.get(query, function(error, vars)
         {
             if(error) {
                 if(callback) {
