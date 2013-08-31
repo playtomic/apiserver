@@ -30,16 +30,7 @@ var gamevars = module.exports = {
             return setTimeout(refresh, 1000);
         }
 
-	var query = {
-            
-            filter: {
-                publickey: options.publickey,
-                table: options.table
-            },
-   
-        };
-	
-        db.playtomic.gamevars.get(query, function(error, vars)
+        db.playtomic.gamevars.get(function(error, vars)
         {
             if(error) {
                 if(callback) {
@@ -52,12 +43,12 @@ var gamevars = module.exports = {
 
             for(var i=0; i<vars.length; i++) {
 				
-				var publickey = vars[i].publickey;
-				
-				if(!publickey) {
-					console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
-					continue;
-				}
+		var publickey = vars[i].publickey;
+		
+		if(!publickey) {
+			console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
+			continue;
+		}
 
                 var gamevar = vars[i];
 
