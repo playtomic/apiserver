@@ -30,6 +30,7 @@ var gamevars = module.exports = {
             return setTimeout(refresh, 1000);
         }
 
+	
         db.playtomic.gamevars.get(function(error, vars)
         {
             if(error) {
