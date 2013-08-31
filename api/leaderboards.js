@@ -136,7 +136,7 @@ var leaderboards = module.exports = {
         }
 
         if(!options.table) {
-            callback("no table name (" + options.table + ")", errorcodes.InvalidName);
+            callback("no table name (" + options.table + ")", errorcodes.InvalidLeaderboardId);
             return;
         }
 

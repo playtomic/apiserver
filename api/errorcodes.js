@@ -60,7 +60,7 @@ module.exports = {
         "201": "The player's name was not provided when saving a score",
 		"203": "Player is banned from submitting scores in this game",
 		"204": "Score was not saved because it was not the player's best.  You can allow players to have more than one score by specifying allowduplicates=true in your save options",
-		
+
         // GameVars Errors
         "300": "GameVars API has been disabled for this game",
     
