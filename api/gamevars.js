@@ -60,7 +60,7 @@ var gamevars = module.exports = {
                     lastupdated = vars[i].lastupdated;
                 }
 
-                varlist[publickey][gamevar.name] = gamevar.value;
+                varlist[publickey][gamevar.name] gamevar;
             }
 
             gamevars.ready = true;
