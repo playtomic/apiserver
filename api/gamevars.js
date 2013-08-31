@@ -24,15 +24,20 @@ var gamevars = module.exports = {
 (function() {
     var lastupdated = 0;
 
+  
     function refresh() {
 
         if(!games.ready) {
             return setTimeout(refresh, 1000);
         }
 
-	
-        db.playtomic.gamevars.get(function(error, vars)
+        db.playtomic.gamevars.get({}, function(error, vars)
         {
+	    
+	    
+	  console.log("TEST");
+    
+    
             if(error) {
                 if(callback) {
                     callback(error);
@@ -42,6 +47,7 @@ var gamevars = module.exports = {
                 return setTimeout(refresh, 1000);
             }
 
+		
             for(var i=0; i<vars.length; i++) {
 				
 		var publickey = vars[i].publickey;
