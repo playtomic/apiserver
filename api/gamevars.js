@@ -50,10 +50,7 @@ var gamevars = module.exports = {
 					continue;
 				}
 
-                var gamevar = {
-                    name: vars[i].name,
-                    value: vars[i].value
-                };
+                var gamevar = vars[i];
 
                 if(!varlist[publickey]) {
                     varlist[publickey] = {};
