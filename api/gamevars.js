@@ -34,10 +34,6 @@ var gamevars = module.exports = {
         db.playtomic.gamevars.get({}, function(error, vars)
         {
 	    
-	    
-	  console.log("TEST");
-    
-    
             if(error) {
                 if(callback) {
                     callback(error);
