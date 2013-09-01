@@ -24,6 +24,7 @@ var gamevars = module.exports = {
 (function() {
     var lastupdated = 0;
 
+  
     function refresh() {
 
         if(!games.ready) {
@@ -32,6 +33,7 @@ var gamevars = module.exports = {
 
         db.playtomic.gamevars.get({}, function(error, vars)
         {
+	    
             if(error) {
                 if(callback) {
                     callback(error);
@@ -41,19 +43,17 @@ var gamevars = module.exports = {
                 return setTimeout(refresh, 1000);
             }
 
+		
             for(var i=0; i<vars.length; i++) {
 				
-				var publickey = vars[i].publickey;
-				
-				if(!publickey) {
-					console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
-					continue;
-				}
+		var publickey = vars[i].publickey;
+		
+		if(!publickey) {
+			console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
+			continue;
+		}
 
-                var gamevar = {
-                    name: vars[i].name,
-                    value: vars[i].value
-                };
+                var gamevar = vars[i];
 
                 if(!varlist[publickey]) {
                     varlist[publickey] = {};
@@ -63,7 +63,7 @@ var gamevars = module.exports = {
                     lastupdated = vars[i].lastupdated;
                 }
 
-                varlist[publickey][gamevar.name] = gamevar.value;
+                varlist[publickey][gamevar.name] = gamevar;
             }
 
             gamevars.ready = true;
