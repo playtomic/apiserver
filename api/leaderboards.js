@@ -340,7 +340,7 @@ var leaderboards = module.exports = {
                                 continue;
                             }
 
-                            inserted.splice(i, 0, insertedscore);
+                            scores.splice(i, 0, insertedscore);
                             inserted = true;
                             break;
                         }
