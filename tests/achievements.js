@@ -147,10 +147,10 @@ describe("achievements", function() {
 						playername: "ben",
 						playerid: "1"
 					};
-
+					
 					achievements.save(achievement, function(error, errorcode) {
-			            assert.notEqual(error, null);
-			            assert.equal(errorcode, errorcodes.NoAchievement);
+                        assert.notEqual(error, null);
+                        assert.equal(errorcode, errorcodes.NoAchievement);
 						done();
 					});
 				});
@@ -222,9 +222,9 @@ describe("achievements", function() {
 			setTimeout(function() {
 			
 				achievements.save(achievement, function(error, errorcode) {
-		            assert.equal(error, null);
-		            assert.equal(errorcode, errorcodes.NoError);
-			
+                    assert.equal(error, null);
+                    assert.equal(errorcode, errorcodes.NoError);
+
 					var options = {
 						publickey: testgame.publickey,
 						friendslist: ["1", "2", "3"]
@@ -314,15 +314,15 @@ describe("achievements", function() {
 			
 			setTimeout(function() { 
 				achievements.save(achievement, function(error, errorcode) {
-		            assert.equal(error, null);
-		            assert.equal(errorcode, errorcodes.NoError);
-			
+                    assert.equal(error, null);
+                    assert.equal(errorcode, errorcodes.NoError);
+                    
 					var options = {
 						publickey: testgame.publickey,
 						playerid: "1",
 						friendslist: ["2", "3", "4"] // fakeid #4 forces an uncached lookup
 					};
-
+					
 					achievements.list(options, function(error, errorcode, achievements) {
 						assert.equal(error, null);
 						assert.equal(errorcode, 0);
@@ -399,7 +399,7 @@ describe("achievements", function() {
 			friendslist: ["3"],
 			perpage: 1
 		};
-
+		
 		achievements.stream(options, function(error, errorcode, items, numitems) {
 			assert.equal(error, null);
 			assert.equal(errorcode, 0);
@@ -417,7 +417,7 @@ describe("achievements", function() {
 			publickey: testgame.publickey,
 			group: true
 		};
-
+		
 		achievements.stream(options, function(error, errorcode, items, numitems) {
 			assert.equal(error, null);
 			assert.equal(errorcode, 0);
@@ -466,7 +466,7 @@ describe("achievements", function() {
 			friendslist: ["2", "3"],
 			group: true
 		};
-
+		
 		achievements.stream(options, function(error, errorcode, items, numitems) {
 			assert.equal(error, null);
 			assert.equal(errorcode, 0);
@@ -489,18 +489,17 @@ describe("achievements", function() {
             playerid: "1",
             publickey: testgame.publickey
         };
-
+        
         v1.stream(payload, testgame.request, testgame.response, function(error, output) {
-
+            
             assert.notEqual(output, null);
             var json;
-
+            
             try {
                 json = JSON.parse(output);
             } catch(s) {
-
             }
-
+            
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
@@ -515,18 +514,17 @@ describe("achievements", function() {
             friendslist: ["1", "2,"],
             publickey: testgame.publickey
         };
-
+        
         v1.list(payload, testgame.request, testgame.response, function(error, output) {
 			
             assert.notEqual(output, null);
             var json;
-
+            
             try {
                 json = JSON.parse(output);
             } catch(s) {
-
             }
-
+            
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
@@ -553,13 +551,12 @@ describe("achievements", function() {
 			
             assert.notEqual(output, null);
             var json;
-
+            
             try {
                 json = JSON.parse(output);
             } catch(s) {
-
             }
-
+            
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);

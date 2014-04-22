@@ -1,7 +1,5 @@
-var games = require(__dirname + "/../api/games.js"),
-    playerlevels = require(__dirname + "/../api/playerlevels.js"),
-    database = require(__dirname + "/../api/database.js"),
-    assert = require("assert"),
+var assert = require("assert"),
+    db = require(__dirname + "/../api/database.js"),
     testgame = require(__dirname + "/testgame.js"),
     errorcodes = require(__dirname + "/../api/errorcodes.js").errorcodes,
     v1 = require(__dirname + "/../v1/playerlevels.js");
@@ -86,23 +84,23 @@ describe("playerlevels", function() {
         };
 
        v1.rate(payload, testgame.request, testgame.response, function(error, output) {
-
+           
            assert.equal(error, null);
            assert.notEqual(output, null);
-
+           
            var json;
-
+           
            try {
                json = JSON.parse(output);
            } catch(s) {
            }
-
+           
            assert.notEqual(json, null);
-
+           
+           // try again to trigger the error
            level.score = 7;
            level.votes = 1;
-
-           // try again to trigger the error
+           
            v1.rate(payload, testgame.request, testgame.response, function(error, output) {
                assert.notEqual(error, null);
                done();

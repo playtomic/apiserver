@@ -1,6 +1,6 @@
 var testgame = require(__dirname + "/testgame.js"),
-    games = require(__dirname + "/../api/games.js"),
     gamevars = require(__dirname + "/../api/gamevars.js"),
+    db = require(__dirname + "/../api/database.js"),
     v1 = require(__dirname + "/../v1/gamevars.js"),
     assert = require("assert");
 
@@ -24,18 +24,18 @@ describe("gamevars", function() {
 			
 			// wait for the gamevars cache to reload
 			gamevars.ready = false;
-		
-	        function gamevarsready() {
-			
-	            if(!gamevars.ready) {
-	                return setTimeout(gamevarsready, 100);
-	            }
-			
-				gvdata = gamevars.data;
-				testdata = gamevars.load(testgame.publickey) || {};
-	            done();
-	        }
-		
+            
+            function gamevarsready() {
+            
+                if(!gamevars.ready) {
+                    return setTimeout(gamevarsready, 100);
+                }
+                
+                gvdata = gamevars.data;
+                testdata = gamevars.load(testgame.publickey) || {};
+                done();
+            }
+            
 			gamevarsready();
 		}
 		

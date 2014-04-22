@@ -1,6 +1,5 @@
 var api = require(__dirname + "/../api"),
     output = require(__dirname + "/output.js"),
-    errorcodes = api.errorcodes,
 	testing = process.env.testing || false;
 
 module.exports = function(payload, request, response, testcallback) {
@@ -11,12 +10,12 @@ module.exports = function(payload, request, response, testcallback) {
             if(testcallback) {
                 testcallback(error);
             }
-
+            
             return output.terminate(payload, response, errorcode, error);
         }
-
+        
         var r = output.end(payload, response, {}, errorcode);
-
+        
         if(testing && testcallback) {
             testcallback(null, r);
         }

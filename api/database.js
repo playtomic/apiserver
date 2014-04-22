@@ -1,5 +1,5 @@
 var config = require(__dirname + "/config.js"),
-datetime = require(__dirname + "/datetime.js")
+    datetime = require(__dirname + "/datetime.js");
 
 // setup
 var mongodb = require("mongodb");
@@ -17,9 +17,7 @@ db.open(function (error, cnn) {
 	
 	function setup() {
 		
-		var jobs = [],
-			collectionadd = 0,
-			collectionclean = 0;
+		var jobs = [];
 		
 		// creating collections
 		collections.forEach(function(collection) {
@@ -40,7 +38,7 @@ db.open(function (error, cnn) {
 		// advanced users may override the default index 
 		// creation for leaderboards that are using their 
 		// own exact-match indexing
-		if(process.env.disable_default_score_indexes == null) {
+		if(process.env.disable_default_score_indexes === null) {
 			jobs.push(function() { 
 				cnn.collection("leaderboard_scores").createIndex([["publickey", 1], ["points", -1]], next); 
 			});
@@ -116,21 +114,21 @@ db.open(function (error, cnn) {
 		
 		scores.forEach(function(scoredata) {
 
-			jobs.push(function() { 
-				
-		        var score = {
-		            publickey: "testpublickey",
-		            source: "localhost",
-					playername: scoredata.playername,
-		            points: scoredata.points,
-		            playerid: scoredata.playerid.toString(),
-					table: "scores",
-					date: datetime.now,
-		            fields: {}
-		        };
-				
-				cnn.collection("leaderboard_scores").save(score, next); 
-			});
+            jobs.push(function() { 
+                
+                var score = {
+                    publickey: "testpublickey",
+                    source: "localhost",
+                    playername: scoredata.playername,
+                    points: scoredata.points,
+                    playerid: scoredata.playerid.toString(),
+                    table: "scores",
+                    date: datetime.now,
+                    fields: {}
+                };
+                
+                cnn.collection("leaderboard_scores").save(score, next); 
+            });
 		});
 
 
@@ -140,7 +138,7 @@ db.open(function (error, cnn) {
 				console.log(error);
 			}
 			
-			if(jobs.length == 0) {
+			if(!jobs.length) {
 				db.ready = true;
 				cnn.close();
 			} else { 
@@ -152,15 +150,15 @@ db.open(function (error, cnn) {
 	}
 
     if(config.mongo.playtomic.username && config.mongo.playtomic.password) {
-	    cnn.authenticate(config.mongo.playtomic.username, config.mongo.playtomic.password, function(error) {
-
-	        if(error) {
-	            console.log("authentication failed: " + error);
-	            return;
-	        }
-
-	        setup();
-	    });
+        cnn.authenticate(config.mongo.playtomic.username, config.mongo.playtomic.password, function(error) {
+        
+            if(error) {
+                console.log("authentication failed: " + error);
+                return;
+            }
+            
+            setup();
+        });
 	} else {
 		setup();
 	}

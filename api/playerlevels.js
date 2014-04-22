@@ -1,26 +1,22 @@
-var config = require(__dirname + "/config.js"),
-    db = require(__dirname + "/database.js"),
+var db = require(__dirname + "/database.js"),
     mongodb = require("mongodb"),
-    mdouble = mongodb.BSONPure.Double,
     objectid = mongodb.BSONPure.ObjectID,
     md5 = require(__dirname + "/md5.js"),
     utils = require(__dirname + "/utils.js"),
-    date = utils.fromTimestamp,
     datetime = require(__dirname + "/datetime.js"),
     errorcodes = require(__dirname + "/errorcodes.js").errorcodes;
 
-var playerlevels = module.exports = {
+module.exports = {
 
     list:function (options, callback) {
 		
 		// TODO: would be cool if you could pass vote and score min/maxes as filters
-
         var query = {
-
+            
             filter: {
                 publickey: options.publickey
             },
-            limit: parseInt((options.perpage || "20").toString()),
+            limit: parseInt((options.perpage || "20"), 10),
             skip: ((options.page - 1) * options.perpage),
             sort: {},
             cache: false,
@@ -42,7 +38,7 @@ var playerlevels = module.exports = {
             var datemax = options.datemax;
 
             if(datemin && datemax) {
-                query.filter["$and"] = [{date: {$gte: utils.toTimestamp(datemin)}}, {date: {$gte: utils.toTimestamp(datemax)}}];
+                query.filter.$and = [{date: {$gte: utils.toTimestamp(datemin)}}, {date: {$gte: utils.toTimestamp(datemax)}}];
             }
 
             query.sort = {"rating": -1};
@@ -106,7 +102,7 @@ var playerlevels = module.exports = {
                 return callback("error loading level (api.playerlevels.load:96)", errorcodes.GeneralError);
             }
 
-            if (!levels || levels.length == 0) {
+            if (!levels || !levels.length) {
                 return callback("unable to find level (api.playerlevels.load:102)", errorcodes.GeneralError);
             }
 
@@ -119,15 +115,15 @@ var playerlevels = module.exports = {
         if(!options.levelid) {
             return callback("missing id", errorcodes.NoLevelId);
         }
-
+        
         var hash = md5(options.ip + "." + options.levelid);
-
+        
         if(ratings.check(hash)) {
             return callback("already rated (api.playerlevels.rate:137)", errorcodes.AlreadyRated);
         }
-
-        var rating = parseInt(options.rating.toString());
-
+        
+        var rating = parseInt(options.rating.toString(), 10);
+        
         if(!rating || rating < 1 || rating > 10) {
             return callback("invalid rating (1 - 10) (api.playerlevels.rate:133)", errorcodes.InvalidRating);
         }
@@ -215,25 +211,26 @@ function clean(levels, data) {
 
     for(var i=0; i<levels.length; i++) {
 
-        var level = levels[i];
-
-        for(var x in level) {
+        var level = levels[i],
+            x;
+            
+        for(x in level) {
             if(typeof(level[x]) == "String") {
                 level[x] = utils.unescape(level[x]);
             }
         }
-
-        for(var x in level.fields) {
+        
+        for(x in level.fields) {
             if(typeof(level.fields[x]) == "String") {
                 level.fields[x] = utils.unescape(level.fields[x]);
             }
         }
-
+        
         level.levelid = level._id;
 		level.rdate = utils.friendlyDate(utils.fromTimestamp(level.date));
         delete level._id;
         delete level.hash;
-
+        
         if(data !== true) {
             delete level.data;
         }
@@ -242,7 +239,7 @@ function clean(levels, data) {
     return levels;
 }
 
-// save recent ratings for up to 2 minutes
+// save recent ratings for up to 5 minutes
 var cache = {};
 
 var ratings = {
@@ -252,20 +249,18 @@ var ratings = {
     },
 
     check: function(hash) {
-        return cache[hash] != null;
+        return hash in cache;
     },
-
+    
     cleanup: setInterval(function() {
-
-        var now = datetime.now;
-
+        
         for(var hash in cache) {
             cache[hash]--;
-
-            if(cache[hash] > 0) {
+            
+            if(cache[hash]) {
                 continue;
             }
-
+            
             delete cache[hash];
         }
     }, 5000)

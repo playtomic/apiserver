@@ -1,6 +1,5 @@
 var mongodb = require("mongodb"),
     localcache = {},
-    connections = {},
     allconnections = [],
     debug = process.env.debug || false;
 
@@ -197,7 +196,7 @@ function getConnection(databasename, collectionname, operation, callback) {
     });
 }
 
-module.exports = db = {
+var db = module.exports = {
 
     /**
      * Configuration settings
@@ -277,7 +276,7 @@ module.exports = db = {
                 killConnection(cnn, error);
 
                 if(callback) {
-                    callback(error, error == null);
+                    callback(error, error === null);
                 }
 
                 if(error) {
@@ -701,7 +700,7 @@ module.exports = db = {
                     });
                 });
             });
-        })
+        });
     },
 
     /**
@@ -735,7 +734,7 @@ module.exports = db = {
                 }
 
                 if(callback) {
-                    callback(error, error == null);
+                    callback(error, error === null);
                 }
             });
         });
@@ -770,7 +769,7 @@ var cache = {
         var key = database.name + ":" + database.collectionname + ":" + operation + ":" + JSON.stringify(options);
         localcache[key] = { data: JSON.stringify(obj), time: options.cachetime || db.defaultCacheTime};
     }
-}
+};
 
 setInterval(function() {
 
@@ -853,7 +852,7 @@ function configureDatabase(databasename) {
 			aggregateAndCount: function(options, callback) { 
 				db.aggregateAndCount(databasename, collectionname, options, callback); 
 			}
-		}
+		};
     };
 
     /**
@@ -899,17 +898,18 @@ function configureDatabase(databasename) {
 
                     var name = names[i];
 
-                    if(name.indexOf(databasename + ".system.") == 0)
+                    if(name.indexOf(databasename + ".system.") === 0) {
                         continue;
-
+                    }
+                    
                     var collectionname = name.substring(databasename.length + 1);
                     db[databasename].collection(collectionname);
                 }
-
+                
                 connection.close();
                 connection = null;
                 callback(null);
             });
         });
-    }
+    };
 }

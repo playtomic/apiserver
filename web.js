@@ -1,8 +1,9 @@
 var express = require("express"),
     querystring = require("querystring"),
-    v1 = require(__dirname + "/v1/router.js"),
-	database = require(__dirname + "/api/database.js"), // to trigger the setup
-	ping = require(__dirname + "/api/ping.js"); // to keep the app awake
+    v1 = require(__dirname + "/v1/router.js");
+    
+require(__dirname + "/api/database.js"), // to trigger the setup
+require(__dirname + "/api/ping.js"); // to keep the app awake
 	
 var app = express.createServer();
 
@@ -56,13 +57,12 @@ app.listen(port, function() {
 });
 
 // cross domain
-var crossdomainInsecure = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\"><cross-domain-policy><site-control permitted-cross-domain-policies=\"master-only\" /><allow-access-from domain=\"*\" to-ports=\"*\" /><allow-http-request-headers-from domain=\"*\" headers=\"*\" /></cross-domain-policy>";
-var crossdomainSecure = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\"><cross-domain-policy><site-control permitted-cross-domain-policies=\"master-only\" /><allow-access-from domain=\"*\" to-ports=\"*\" secure=\"false\" /><allow-http-request-headers-from domain=\"*\" headers=\"*\" /></cross-domain-policy>";
+var crossdomain = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\"><cross-domain-policy><site-control permitted-cross-domain-policies=\"master-only\" /><allow-access-from domain=\"*\" to-ports=\"*\" secure=\"false\" /><allow-http-request-headers-from domain=\"*\" headers=\"*\" /></cross-domain-policy>";
 var XML_HEADER = {"Content-Type": "text/xml"};
 
 app.all("/crossdomain.xml", function(request, response) {
     response.writeHead(200, XML_HEADER);
-    response.end(crossdomainSecure);
+    response.end(crossdomain);
 });
 
 // everything else

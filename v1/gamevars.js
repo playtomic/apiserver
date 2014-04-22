@@ -6,25 +6,24 @@ var output = require(__dirname + "/output.js"),
 module.exports = {
 	
 	sectionCode: 300,
-
+	
     load: function(payload, request, response, testcallback) {
-        var gv = api.gamevars.load(payload.publickey);
-        var r = output.end(payload, response, gv, errorcodes.NoError);
-
+        var gv = api.gamevars.load(payload.publickey),
+            r = output.end(payload, response, gv, errorcodes.NoError);
+        
         if(testcallback) {
             testcallback(null, r);
         }
     },
 
     single: function(payload, request, response, testcallback) {
-
+        
         var gv = api.gamevars.load(payload.publickey);
-
         var single = {};
         single[payload.name] = gv[payload.name];
-
+        
         var r = output.end(payload, response, single, errorcodes.NoError);
-
+        
         if(testing && testcallback) {
             testcallback(null, r);
         }

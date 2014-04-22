@@ -10,21 +10,20 @@ module.exports = {
     subscribe: function(payload, request, response, testcallback) {
 
         api.newsletter.subscribe(payload, function(error, errorcode) {
-			
-			if(error) {
-			
-	            if(testcallback) {
-	                testcallback(error);
-	            }
-
-	            return output.terminate(payload, response, errorcode, error);
-			}
-			
-	        var r = output.end(payload, response, {}, errorcodes.NoError);
-
-	        if(testing && testcallback) {
-	            testcallback(null, r);
-	        }
+            
+            if(error) {
+                if(testcallback) {
+                    testcallback(error);
+                }
+            
+                return output.terminate(payload, response, errorcode, error);
+            }
+            
+            var r = output.end(payload, response, {}, errorcodes.NoError);
+            
+            if(testing && testcallback) {
+                testcallback(null, r);
+            }
         });
-     }
+    }
 };

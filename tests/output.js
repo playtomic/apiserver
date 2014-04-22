@@ -1,4 +1,5 @@
 var testgame = require(__dirname + "/testgame.js"),
+    db = require(__dirname + "/../api/database.js"),
     v1 = require(__dirname + "/../v1/output.js"),
     assert = require("assert");
 
