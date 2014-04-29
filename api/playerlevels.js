@@ -335,66 +335,28 @@ module.exports = {
         });
     },
     
+    // hook for testing to trigger the rating aggregation immediately
     forceAggregation: function(callback) {
-        prepareAggregation(callback);
+        aggregateRatings(callback);
     }
 };
 
 /**
  * periodically aggregates the best levels from today/yesterday, this/last week, this/last month
  */
- function prepareAggregation(callback) {
-     
-     var query = { 
-        filter: {
-            $exists: { "lastaggregated": -1 }
-        },
-        fields: { 
-            _id: 1,
-        },
-        cache: false
-    };
-    
-    db.playtomic.playerlevel_levels.get(query, function(error, results) {
-       
-       if(error) {
-           return setTimeout(prepareAggregation, 1000);
-        }
-        
-        results.forEach(function(level) {
-            
-            var command = {
-                filter: {
-                    _id: level._id
-                },
-                doc: {
-                    $set: { 
-                        lastaggregated: 0
-                    }
-                },
-                upsert: false,
-                safe: true
-            };
-            
-            db.playtomic.playerlevel_levels.update(command, function(error) {
-                if(error) {
-                }
-            });
-        });
-        
-        return aggregateRatings(callback);
-    });
-}
-
 if(!process.env.testing) {
-    setTimeout(prepareAggregation, 5000);
+    setTimeout(aggregateRatings, 5000);
 }
 
 function aggregateRatings(callback) {
     
     var query = { 
         filter: {
-            votes: { $gte: 1 }
+            votes: { $gte: 1 },
+            $or: [
+                { $lte: datetime.now - 600 },
+                { $ne: "lastaggragated" }
+            ]
         },
         fields: { 
             _id: 1,
@@ -403,7 +365,7 @@ function aggregateRatings(callback) {
         sort: { 
             lastaggregated: 1
         },
-        limit: 2000,
+        limit: 1000,
         cache: false
     };
      
