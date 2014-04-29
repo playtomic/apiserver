@@ -403,14 +403,14 @@ function aggregateRatings(callback) {
         sort: { 
             lastaggregated: 1
         },
-        limit: 1000,
+        limit: 2000,
         cache: false
     };
      
     db.playtomic.playerlevel_levels.get(query, function(error, items) {
         
         if(error) {
-            return setTimeout(aggregateRatings, 60 * 60 * 1000);
+            return setTimeout(aggregateRatings, 5 * 60 * 1000);
         }
          
         var sum,
@@ -508,7 +508,7 @@ function aggregateRatings(callback) {
             
             db.playtomic.playerlevel_levels.update(command, function(error) {
                if(error) {
-                    return setTimeout(aggregateRatings, 60 * 60 * 1000);
+                    return setTimeout(aggregateRatings, 5 * 60 * 1000);
                } 
            });
         });
@@ -517,7 +517,7 @@ function aggregateRatings(callback) {
             callback();
         }
         
-        return setTimeout(aggregateRatings, 60 * 60 * 1000);
+        return setTimeout(aggregateRatings, 5 * 60 * 1000);
     });
 }
 
