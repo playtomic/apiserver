@@ -2,8 +2,7 @@ var testgame = require(__dirname + "/testgame.js"),
 	config = require(__dirname + "/../api/config.js"),
     newsletter = require(__dirname + "/../api/newsletter.js"),
 	v1 = require(__dirname + "/../v1/newsletter.js"),
-	errorcodes = require(__dirname + "/../api/errorcodes.js").errorcodes,
-    assert = require("assert");
+	assert = require("assert");
 	
 // setup
 config.mailchimp.apikey = "194edfd523676481bbf6011499ed8979-us7";

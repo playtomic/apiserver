@@ -1,0 +1,4 @@
+#!/bin/sh
+# for editing on c9.io
+mkdir -p .mongodb
+mongod --bind_ip=$IP --dbpath=.mongodb --nojournal --rest "$@"

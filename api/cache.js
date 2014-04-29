@@ -28,7 +28,7 @@ var cache = module.exports = {
     lkey: function(key) {
         return md5(key);
     }
-}
+};
 
 // cache cleaning
 setInterval(function() {

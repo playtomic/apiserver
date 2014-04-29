@@ -15,7 +15,7 @@ var dateFormat = function () {
     // Regexes and supporting functions are cached through closure
     return function (date, mask, utc) {
 
-        if(date == null) {
+        if(date === null) {
             date = new Date();
         }
         else if(!date.getDate) {

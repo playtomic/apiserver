@@ -1,9 +1,6 @@
-var config = require(__dirname + "/config.js"),
-    db = require(__dirname + "/database.js"),
+var db = require(__dirname + "/database.js"),
     md5 = require(__dirname + "/md5.js"),
     utils = require(__dirname + "/utils.js"),
-    mongodb = require("mongodb"),
-    objectid = mongodb.BSONPure.ObjectID,
     datetime = require(__dirname + "/datetime.js"),
     errorcodes = require(__dirname + "/errorcodes.js").errorcodes;
 
@@ -55,18 +52,16 @@ var leaderboards = module.exports = {
         }
         
         // filtering for playerids
-		var playerids = [];
+        var playerids = options.friendslist || [];
 		
         if(options.playerid && !options.excludeplayerid) {
             playerids.push(options.playerid);
         }
-        
-        if(options.friendslist) {
-			playerids = playerids.concat(options.friendslist);
-		}
 		
-		if(playerids.length > 0) {
+		if(playerids.length > 1) {
             query.filter.playerid = { $in: playerids };
+        } else if(playerids.length == 1) {
+            query.filter.playerid = playerids[0];
         }
 
         // date mode
@@ -98,8 +93,6 @@ var leaderboards = module.exports = {
         }
 
         // the scores
-        //console.log(JSON.stringify(query));
-
         db.playtomic.leaderboard_scores.getAndCount(query, function(error, scores, numscores){
 
             if(error) {
@@ -162,7 +155,7 @@ var leaderboards = module.exports = {
         }
 
         score.hash = md5(options.publickey + 
-						 options.ip + "." +
+                         options.ip + "." +
                          options.table + "." +
                          options.playername + "." +
                          options.playerid + "." +
@@ -189,8 +182,7 @@ var leaderboards = module.exports = {
             return;
         }
 
-        // check for duplicates, by default we will assume highest unless
-        // lowest is explicitly specified
+        // check for duplicates, by default we will assume highest unless lowest is explicitly specified
         var dupequery = {
             filter: {
                 hash: score.hash
@@ -199,25 +191,25 @@ var leaderboards = module.exports = {
             cache: false,
             sort: options.highest ? {score : -1 } : {score: 1 }
         };
-
+        
         db.playtomic.leaderboard_scores.get(dupequery, function(error, items) {
-
+            
             // no duplicates
-            if(items.length == 0) {
-
+            if(!items.length) {
+                
                 db.playtomic.leaderboard_scores.insert({doc: score}, function(error, item) {
-
+                    
                     if(error) {
                         callback("unable to insert score: " + error + " (api.leaderboards.save:212)", errorcodes.GeneralError);
                         return;
                     }
-
+                    
                     callback(null, errorcodes.NoError, item._id, item);
                 });
-
+                
                 return;
             }
-
+            
             // check if the new score is higher or lower
             var dupe = items[0];
 			
@@ -231,12 +223,12 @@ var leaderboards = module.exports = {
                 };
 				
                 db.playtomic.leaderboard_scores.update(query, function(error, item) {
-
+                    
                     if(error) {
                         callback("unable to update score: " + error + " (api.leaderboards.save:240)", errorcodes.GeneralError);
                         return;
                     }
-
+                    
                     callback(null, errorcodes.NoError, item._id, item);
                 });
             } else {
@@ -276,46 +268,46 @@ var leaderboards = module.exports = {
 			}
 
 			if(options.filters) {
-	            for(var x in options.filters) {
-	                query.filter["fields." + x] = options.filters[x];
-	            }
+                for(var x in options.filters) {
+                    query.filter["fields." + x] = options.filters[x];
+                }
 			}
-
-            if(options.friendslist) {
-                if(options.friendslist.length > 100) {
-                    options.friendslist.length = 100;
-                }
-
-                if(query.filter.playerid) { 
-                    options.friendslist.push(query.filter.playerid);
-                }
-
-                query.filter.playerid = { $in: options.friendslist }
-            }
 			
+            var playerids = options.friendslist || [];
+            
+            if(options.playerid && !options.excludeplayerid) {
+                playerids.push(options.playerid);
+            }
+            
+            if(playerids.length > 1) {
+                query.filter.playerid = { $in: playerids };
+            } else if(playerids.length == 1) {
+                query.filter.playerid = playerids[0];
+            }
+            
 			if(options.source) {
 				query.filter.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
 			}
-
+			
             // index the freshly saved score
             manuallyIndexScore(query.filter, options.highest, options.points);
             var serrorcode = errorcode;
-
+            
             rank(query.filter, options.highest, options.points, function(error, numscores)
             {
                 options.page = Math.ceil((numscores + 1) / options.perpage);
-
+                
                 leaderboards.list(options, function(error, errorcode, numscores, scores) {
-
+                    
                     if(error) {
                         callback(error + " (api.leaderboards.saveAndList:293)", errorcode);
                         return;
                     }
-
+                    
                     if(serrorcode > 0) {
                         errorcode = serrorcode;
                     }
-
+                    
                     var foundsubmitted = false;
                     var i;
                     
@@ -366,15 +358,16 @@ function clean(scores, baserank) {
 
     for(var i=0; i<scores.length; i++) {
 
-        var score = scores[i];
+        var score = scores[i],
+            x;
 
-        for(var x in score) {
+        for(x in score) {
             if(typeof(score[x]) == "String") {
                 score[x] = utils.unescape(score[x]);
             }
         }
 
-        for(var x in score.fields) {
+        for(x in score.fields) {
             if(typeof(score.fields[x]) == "String") {
                 score.fields[x] = utils.unescape(score.fields[x]);
             }
@@ -403,8 +396,9 @@ function rank(filter, highest, points, callback) {
         return rankManual(filter, highest, points, callback);
     }
 
-    var hash = md5(JSON.stringify(filter) + "." + highest);
-    var i;
+    var hash = md5(JSON.stringify(filter) + "." + highest),
+        found,
+        i;
 
     // the index itself exists, we check if we have the score 
     // and if not we add it to the index
@@ -420,7 +414,7 @@ function rank(filter, highest, points, callback) {
         }*/
 
         var before = 0;
-        var found = false;
+        found = false;
 
         for(i=0; i<arr.length; i++) {
  
@@ -441,7 +435,7 @@ function rank(filter, highest, points, callback) {
     } 
 
     // check if we already have this index queued
-    var found = false;
+    found = false;
     for(i=0; i<indexes.length; i++) {
         if(indexes[i].key == hash) {
             found = true;
@@ -525,7 +519,7 @@ function manuallyIndexScore(filter, highest, points) {
             indexes[i].delete = [];
         }
 
-        indexes[i].delete.push(points)
+        indexes[i].delete.push(points);
     }
 }
 
@@ -536,82 +530,73 @@ var indexes = [];
 
     function load() {
 
-        if(indexes.length == 0) {
+        if(!indexes.length) {
             return setTimeout(load, 5000);
         }
-
+        
         // sort by last updated]
         indexes.sort(function(a, b) { 
             return a.lastupdated < b.lastupdated ? 1 : -1;
         });
-
+        
         // most recent data is less than 30 secounds old
         if(datetime.now - indexes[0].lastcheck < 30) {
             return setTimeout(load, 1000);
         }
-
-        var zindex = indexes[0];
-        var pindex = index[zindex.key] || [];
-
+        
+        var zindex = indexes[0],
+        pindex = index[zindex.key] || [];
         zindex.lastcheck = datetime.now;
-
+        
         var query = { 
             filter: zindex.filter,
             fields: { 
                 points: 1,
                 date: 1
             },
-
             sort: { points: zindex.highest ? -1 : 1 }
         };
-
+        
         query.filter.date = {$gt: zindex.lastupdated };
-
+        
         var pk = zindex.key;
-
+        
         db.playtomic.leaderboard_scores.get(query, function(error, scores) {
-
-            if(error) {
-                if(callback) {
-                    callback(error);
-                }
+            
+            if(error || !scores.length) {
                 return setTimeout(load, 1000);
             }
-
-            if(scores.length == 0) {
-                return setTimeout(load, 1000);
-            }
-
-            var ind = {};
-            var i;
-            var score;
-
+            
+            var ind = {},
+                score,
+                i;
+                
             // fold the existing data back into our new index
             // because the queries only return partial datasets
             for(i=0; i<pindex.length; i++) {
                 ind[pindex[i].points] = pindex[i];
             }
-
+            
             // delete anything we manually added
             if(zindex.delete && zindex.delete.length) {
                 for(i=0; i<zindex.delete.length; i++) {
                     //console.log("deleting", zindex.delete[i], JSON.stringify(ind[zindex.delete[i]]));;
                     ind[zindex.delete[i]].scores--;
                 }
-
+                
                 zindex.delete.length = 0;
             }
-
+            
             // add the new data
             for(i=0; i<scores.length; i++)  {
                 score = scores[i];
-
+                
                 if(!ind[score.points]) {
                     ind[score.points] = { points: score.points, scores: 1 };
                 } else {
                     ind[score.points].scores++;
                 }
-
+                
                 if(score.date > zindex.lastupdated) {
                     zindex.lastupdated = score.date;
                 }
@@ -619,21 +604,17 @@ var indexes = [];
 
             // pull it back out into a sorted array
             var arr = [];
-
-            for(x in ind) {
+            
+            for(var x in ind) {
                 arr.push(ind[x]);
             }
-
-            //console.log("new index size is", arr.length);
-
+            
             arr.sort(function(a, b) { 
                 return zindex.highest 
                     ? (a.points < b.points ? 1 : -1)
                     : (a.points > b.points ? 1 : -1);
             });
-
-            //console.log("LEADERBOARD ORDER", "highest=" + zindex.highest, arr[0].points, arr[1].points);
-
+            
             index[pk] = arr;
             setTimeout(load, 1000);
         });

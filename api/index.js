@@ -1,4 +1,4 @@
-var api = module.exports = {
+module.exports = {
     config: require(__dirname + "/config.js"),
     games: require(__dirname + "/games.js"),
     gamevars: require(__dirname + "/gamevars.js"),

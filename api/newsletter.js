@@ -10,7 +10,7 @@ if(process.env.testing) {
 	config.mailchimp.apiurl = "us7.api.mailchimp.com";
 }	
 
-var newsletter = module.exports = {
+module.exports = {
 	
 	subscribe: function(options, callback) {
 		
@@ -45,7 +45,7 @@ var newsletter = module.exports = {
 
 		var payload = JSON.stringify(data);
 		
-		var options = {  
+		options = {  
 			host: config.mailchimp.apiurl,   
 			port: 443,   
 			path: "/1.3/?method=listSubscribe",  
@@ -57,7 +57,7 @@ var newsletter = module.exports = {
 				accept: "*/*"
 			}
 		};
-			  
+		
 		var req = https.request(options, function(res) { 
 			var cancelled = false;
 			
@@ -86,6 +86,6 @@ var newsletter = module.exports = {
 		});   
 		
 		req.write(payload);
-	    req.end();
+        req.end();
 	}
-} 
+};

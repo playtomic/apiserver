@@ -1,7 +1,5 @@
 var testgame = require(__dirname + "/testgame.js"),
-    games = require(__dirname + "/../api/games.js"),
     leaderboards = require(__dirname + "/../api/leaderboards.js"),
-    db = require(__dirname + "/../api/database.js"),
     v1 = require(__dirname + "/../v1/leaderboards.js"),
     assert = require("assert");
 
@@ -199,19 +197,19 @@ describe("leaderboards", function() {
 			assert.equal(scores[2].rank, 6);
 
 			options = {
-	            table: "scores",
-				highest: true,
-	            perpage: 20,
-	            publickey: testgame.publickey
-			}
+                table: "scores",
+                highest: true,
+                perpage: 20,
+                publickey: testgame.publickey
+			};
 							
 			leaderboards.list(options, function(error2, errorcode2, numscores2, scores2) {
 								
-	            assert.equal(error2, null);
-	            assert.equal(errorcode2, 0);
-	            assert.equal(numscores, numscores2);
-				assert.equal(scores2.length, 13);
-
+                assert.equal(error2, null);
+                assert.equal(errorcode2, 0);
+                assert.equal(numscores, numscores2);
+                assert.equal(scores2.length, 13);
+                
 				// confirm the 3 scores we returned before match and are
 				// really in the right rank and positions
 				for(var i=3; i<6; i++)
@@ -228,7 +226,7 @@ describe("leaderboards", function() {
 	});
 
     it("V1 JSON structure (list)", function(done) {
-
+        
         var payload = {
             publickey: testgame.publickey,
             table: "scores",
@@ -240,17 +238,17 @@ describe("leaderboards", function() {
         };
 
         v1.list(payload, testgame.request, testgame.response, function(error, output) {
-
+            
             assert.notEqual(output, null);
-
+            
             var json;
-
+            
             try {
                 json = JSON.parse(output);
             } catch(s) {
-
+                
             }
-
+            
             assert.notEqual(json, null);
             assert.equal(json.numscores, 13);
             assert.equal(json.success, true);
@@ -273,55 +271,49 @@ describe("leaderboards", function() {
         };
 
         v1.save(payload, testgame.request, testgame.response, function(error, output) {
-
+            
             assert.notEqual(output, null);
-
             var json;
-
+            
             try {
                 json = JSON.parse(output);
             } catch(s) {
-
             }
-
+            
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
-
+            
             // don't overwrite
             payload.points = 9;
-
+            
             v1.save(payload, testgame.request, testgame.response, function(error, output) {
-
+                
                 assert.notEqual(output, null);
-
                 var json;
-
+                
                 try {
                     json = JSON.parse(output);
                 } catch(s) {
-
                 }
-
+                
                 assert.notEqual(json, null);
                 assert.equal(json.errorcode, 209);
                 assert.equal(json.success, true);
-
+                
                 // do overwrite
                 payload.allowduplicates = true;
-
+                
                 v1.save(payload, testgame.request, testgame.response, function(error, output) {
-
+                    
                     assert.notEqual(output, null);
-
                     var json;
-
+                    
                     try {
                         json = JSON.parse(output);
                     } catch(s) {
-
                     }
-
+                    
                     assert.notEqual(json, null);
                     assert.equal(json.errorcode, 0);
                     assert.equal(json.success, true);
@@ -342,7 +334,7 @@ describe("leaderboards", function() {
                 age: 1
             },
             playername: "isabella",
-
+            
             // list params
             table: "scores",
             highest: true,
@@ -355,13 +347,12 @@ describe("leaderboards", function() {
 			
             assert.notEqual(output, null);
             var json;
-
+            
             try {
                 json = JSON.parse(output);
             } catch(s) {
-
             }
-
+            
             assert.notEqual(json, null);
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);

@@ -1,6 +1,6 @@
-var config = module.exports = {
+module.exports = {
     mongo: {
-        playtomic: parseCredentials(process.env.playtomic || "mongodb://playtomic:playtomic@127.0.0.1:27017/playtomic")
+        playtomic: parseCredentials(process.env.playtomic || "mongodb://playtomic:playtomic@" + (process.env.IP || "127.0.0.1") + ":27017/playtomic")
     },
 	mailchimp: {
 		apikey: process.env.mailchimp,
@@ -37,7 +37,7 @@ function parseCredentials(connstring) {
         port = port.substring(0, port.indexOf("/"));
     }
 
-    port = parseInt(port);
+    port = parseInt(port, 10);
 
     // optional database
     var database = connstring.split("/");

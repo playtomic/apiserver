@@ -9,7 +9,7 @@ var http = require("http"),
 		return;
 	}
 	
-	var protocol = apiurl.indexOf("https") == 0 ? https : http;
+	var protocol = apiurl.indexOf("https") === 0 ? https : http;
 	apiurl = apiurl.substring(apiurl.indexOf("://") + 3);
 
 	if(apiurl.indexOf("/") > -1) {
@@ -24,8 +24,8 @@ var http = require("http"),
 	};
 	
 	if(protocol == https) {
-		options.secureProtocol = "SSLv3_method"
-	};
+		options.secureProtocol = "SSLv3_method";
+	}
 	
 	setInterval(function() {
 		
@@ -38,8 +38,8 @@ var http = require("http"),
 			console.log(error);
 		});
 		
-	    req.end();
-	
+        req.end();
+        
 	}, 10000);
-
+	
 })();

@@ -90,7 +90,7 @@ var utils = module.exports = {
         var i;
 
         try  {
-            i = parseInt(o);
+            i = parseInt(o, 10);
         }
         catch(s) {
             i = 0;
@@ -185,7 +185,7 @@ var utils = module.exports = {
             url = url.substring(0, url.indexOf("/"));
         }
         
-        if(url.indexOf("www.") == 0) {
+        if(url.indexOf("www.") === 0) {
             url = url.substring(4);
         }
 

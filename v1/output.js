@@ -32,13 +32,13 @@ module.exports = {
      */
     end: function(payload, response, responsedata, errorcode, exceptionmessage) {
 
-        if(errorcode == null) {
+        if(errorcode === null) {
             errorcode = 0;
         }
 
         var json = responsedata;
         json.errorcode = errorcode;
-        json.success = errorcode == 0 || !exceptionmessage; // not all error codes are fatal
+        json.success = errorcode === 0 || !exceptionmessage; // not all error codes are fatal
 
         if(errorcode > 0) {
             json.errormessage = errormessages[errorcode] || "Unknown";
@@ -49,7 +49,7 @@ module.exports = {
                 utcnow: datetime.utcnow,
                 url: payload.url,
                 payload: JSON.stringify(payload)
-            }
+            };
         }
 
         if(exceptionmessage) {

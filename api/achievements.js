@@ -1,12 +1,8 @@
-var config = require(__dirname + "/config.js"),
-    db = require(__dirname + "/database.js"),
+var db = require(__dirname + "/database.js"),
     md5 = require(__dirname + "/md5.js"),
     utils = require(__dirname + "/utils.js"),
-    mongodb = require("mongodb"),
-    objectid = mongodb.BSONPure.ObjectID,
     datetime = require(__dirname + "/datetime.js"),
     errorcodes = require(__dirname + "/errorcodes.js").errorcodes,
-	games = require(__dirname + "/games.js"),
 	achievementlist = {};
 
 var achievements = module.exports = {
@@ -57,10 +53,12 @@ var achievements = module.exports = {
         }
         
         // filters for custom fields
+        var x;
+        
 		if(options.filters) {
-	        for(var x in options.filters) {
-	            query.filter["fields." + x] = options.filters[x];
-	        }
+            for(x in options.filters) {
+                query.filter["fields." + x] = options.filters[x];
+            }
 		}
         
         // filtering for playerids
@@ -151,7 +149,7 @@ var achievements = module.exports = {
 			];
 			
 			if(Object.keys(query.filter).length) {
-				for(var x in query.filter) {
+				for(x in query.filter) {
 					var m = {};
 					m[x] = query.filter[x];
 					aggregate.splice(0, 0, { $match: m }); // matching has to go first in the pipeline
@@ -161,10 +159,10 @@ var achievements = module.exports = {
 			
 			db.playtomic.achievements_players.aggregateAndCount({ aggregate: aggregate, count: count }, function(error, ritems, numitems) {
 				
-	            if(error) {
-	                callback("unable to aggregate achievements: " + error + " (api.achievements.list:140)", errorcodes.GeneralError);
-	                return;
-	            }
+                if(error) {
+                    callback("unable to aggregate achievements: " + error + " (api.achievements.list:140)", errorcodes.GeneralError);
+                    return;
+                }
 				
 				var items = JSON.parse(JSON.stringify(ritems));
 				var index = achievementIndex(options.publickey);
@@ -183,10 +181,10 @@ var achievements = module.exports = {
 			});
 		} else {
 			db.playtomic.achievements_players.getAndCount(query, function(error, ritems, numitems) {
-	            if(error) {
-	                callback("unable to load achievements: " + error + " (api.achievements.list:67)", errorcodes.GeneralError);
-	                return;
-	            }
+                if(error) {
+                    callback("unable to load achievements: " + error + " (api.achievements.list:67)", errorcodes.GeneralError);
+                    return;
+                }
 				
 				var items = JSON.parse(JSON.stringify(ritems));
 				var index = achievementIndex(options.publickey);
@@ -219,7 +217,7 @@ var achievements = module.exports = {
 		}
 		
 		// no achievements
-		if(achievementlist[options.publickey].length == 0) {
+		if(!achievementlist[options.publickey].length) {
 			callback(null, errorcodes.NoError, achievementlist[options.publickey]);
 			return;
 		}
@@ -249,11 +247,11 @@ var achievements = module.exports = {
 		if(playerids.length > 0) { 
 			query.filter.playerid = { 
 				$in: playerids
-			}
+			};
 		}
 		
-		// we need a copy cause we'll mess with it
-		var achievements = JSON.parse(JSON.stringify(achievementlist[options.publickey]));
+		var achievement, 
+            player;
 		
 		db.playtomic.achievements_players.get(query, function(error, pplayers) {
 			
@@ -272,8 +270,8 @@ var achievements = module.exports = {
 			// apply players
 			for(var i=0; i<players.length; i++) {
 
-				var player = players[i];
-				var achievement = index[player.achievementid];
+				player = players[i];
+				achievement = index[player.achievementid];
 				
 				// a deleted achievement
 				if(!achievement) {
@@ -295,12 +293,12 @@ var achievements = module.exports = {
 					}
 					continue;
 				}
-
+				
 				// a friend's achievement
 				if(!achievement.friends) {
 					achievement.friends = {};
 				}
-
+				
 				if(!achievement.friends[player.playerid]) {
 					achievement.friends[player.playerid] = player;
 				}
@@ -310,7 +308,8 @@ var achievements = module.exports = {
 			var results = [];
 			
 			for(var ach in index) {
-				var achievement = index[ach];
+				
+				achievement = index[ach];
 				
 				if(achievement.friends) {
 					
@@ -401,7 +400,7 @@ var achievements = module.exports = {
 			source: options.source || "",
 			fields: options.fields || {},
 			hash: hash,
-	        date: datetime.now
+            date: datetime.now
 		};
 		
         // check for duplicates, if there is none we can insert otherwise we require 'overwrite'
@@ -416,61 +415,61 @@ var achievements = module.exports = {
         };
 
         db.playtomic.achievements_players.get(dupequery, function(error, items) {
-
+            
             // no duplicates
-            if(items.length == 0) {
-
+            if(!items.length) {
+                
                 db.playtomic.achievements_players.insert({doc: achievement}, function(error, item) {
-
+                    
                     if(error) {
                         callback("unable to insert achievement: " + error + " (api.achievements.save:185)", errorcodes.GeneralError);
                         return;
                     }
-
+                    
                     callback(null, errorcodes.NoError);
                 });
-
+                
                 return;
             }
 			
 			// do we allow duplicates?
-	        if(options.hasOwnProperty("allowduplicates") && options.allowduplicates) {
-
-	            db.playtomic.achievements_players.insert({doc: achievement, safe: true}, function(error, item) {
-
-	                if(error) {
-	                    callback("unable to insert achievement: " + error + " (api.achievements.save:178)", errorcodes.GeneralError);
-	                    return;
-	                }
-
-	                callback(null, errorcodes.AlreadyHadAchievementSaved);
-	            });
-
-	            return;
-	        }
+            if(options.hasOwnProperty("allowduplicates") && options.allowduplicates) {
+            
+                db.playtomic.achievements_players.insert({doc: achievement, safe: true}, function(error, item) {
+                
+                    if(error) {
+                        callback("unable to insert achievement: " + error + " (api.achievements.save:178)", errorcodes.GeneralError);
+                        return;
+                    }
+                    
+                    callback(null, errorcodes.AlreadyHadAchievementSaved);
+                });
+                
+                return;
+            }
 			
 			// can we overwrite?
-			 if(options.hasOwnProperty("overwrite") && options.overwrite) {
-
-				achievement._id = items[0]._id;
-			
-	            var query = {
-	                filter: { _id: achievement._id },
-	                doc: achievement
-	            };
-			
-	            db.playtomic.achievements_players.update(query, function(error, item) {
-
-	                if(error) {
-	                    callback("unable to update achievement: " + error + " (api.achievements.save:208)", errorcodes.GeneralError);
-	                    return;
-	                }
-
-	                callback(null, errorcodes.AlreadyHadAchievementSaved);
-	            });
-				
-				return;
-			}
+            if(options.hasOwnProperty("overwrite") && options.overwrite) {
+            
+                achievement._id = items[0]._id;
+                
+                var query = {
+                    filter: { _id: achievement._id },
+                    doc: achievement
+                };
+                
+                db.playtomic.achievements_players.update(query, function(error, item) {
+                
+                    if(error) {
+                        callback("unable to update achievement: " + error + " (api.achievements.save:208)", errorcodes.GeneralError);
+                        return;
+                    }
+                    
+                    callback(null, errorcodes.AlreadyHadAchievementSaved);
+                });
+                
+                return;
+            }
 			
 			// if we're still here we got rejected
 			callback("already had achievement and no overwrite or allowduplicate options were set.", errorcodes.AlreadyHadAchievementNotSaved);

@@ -1,5 +1,4 @@
 var url = require("url"),
-    querystring = require("querystring"),
     output = require(__dirname + "/output.js"),
     api = require(__dirname + "/../api"),
     games = api.games,
@@ -57,7 +56,7 @@ module.exports = {
             return output.terminate(payload, response, 1, "No posted data (router.js:61)");
         }
 
-	    var decrypted = requestauth.validate(request.body.data, request.body.hash, config.privatekey);
+        var decrypted = requestauth.validate(request.body.data, request.body.hash, config.privatekey);
 
         if(!decrypted) {
 
@@ -86,7 +85,7 @@ module.exports = {
 		payload.publickey = request.query.publickey;
 		
 		if(urlparams.query.debug) {
-     	   payload.debug = urlparams.query.debug;
+            payload.debug = urlparams.query.debug;
 		}
 
         // make sure the section is valid and allowed
