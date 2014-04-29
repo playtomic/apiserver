@@ -52,18 +52,16 @@ var leaderboards = module.exports = {
         }
         
         // filtering for playerids
-		var playerids = [];
+        var playerids = options.friendslist || [];
 		
         if(options.playerid && !options.excludeplayerid) {
             playerids.push(options.playerid);
         }
-        
-        if(options.friendslist) {
-			playerids = playerids.concat(options.friendslist);
-		}
 		
-		if(playerids.length > 0) {
+		if(playerids.length > 1) {
             query.filter.playerid = { $in: playerids };
+        } else if(playerids.length == 1) {
+            query.filter.playerid = playerids[0];
         }
 
         // date mode
@@ -95,8 +93,6 @@ var leaderboards = module.exports = {
         }
 
         // the scores
-        //console.log(JSON.stringify(query));
-
         db.playtomic.leaderboard_scores.getAndCount(query, function(error, scores, numscores){
 
             if(error) {
@@ -186,8 +182,7 @@ var leaderboards = module.exports = {
             return;
         }
 
-        // check for duplicates, by default we will assume highest unless
-        // lowest is explicitly specified
+        // check for duplicates, by default we will assume highest unless lowest is explicitly specified
         var dupequery = {
             filter: {
                 hash: score.hash
@@ -196,9 +191,9 @@ var leaderboards = module.exports = {
             cache: false,
             sort: options.highest ? {score : -1 } : {score: 1 }
         };
-
+        
         db.playtomic.leaderboard_scores.get(dupequery, function(error, items) {
-
+            
             // no duplicates
             if(!items.length) {
                 
@@ -277,42 +272,42 @@ var leaderboards = module.exports = {
                     query.filter["fields." + x] = options.filters[x];
                 }
 			}
-
-            if(options.friendslist) {
-                if(options.friendslist.length > 100) {
-                    options.friendslist.length = 100;
-                }
-
-                if(query.filter.playerid) { 
-                    options.friendslist.push(query.filter.playerid);
-                }
-
-                query.filter.playerid = { $in: options.friendslist };
-            }
 			
+            var playerids = options.friendslist || [];
+            
+            if(options.playerid && !options.excludeplayerid) {
+                playerids.push(options.playerid);
+            }
+            
+            if(playerids.length > 1) {
+                query.filter.playerid = { $in: playerids };
+            } else if(playerids.length == 1) {
+                query.filter.playerid = playerids[0];
+            }
+            
 			if(options.source) {
 				query.filter.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
 			}
-
+			
             // index the freshly saved score
             manuallyIndexScore(query.filter, options.highest, options.points);
             var serrorcode = errorcode;
-
+            
             rank(query.filter, options.highest, options.points, function(error, numscores)
             {
                 options.page = Math.ceil((numscores + 1) / options.perpage);
-
+                
                 leaderboards.list(options, function(error, errorcode, numscores, scores) {
-
+                    
                     if(error) {
                         callback(error + " (api.leaderboards.saveAndList:293)", errorcode);
                         return;
                     }
-
+                    
                     if(serrorcode > 0) {
                         errorcode = serrorcode;
                     }
-
+                    
                     var foundsubmitted = false;
                     var i;
                     

@@ -293,12 +293,12 @@ var achievements = module.exports = {
 					}
 					continue;
 				}
-
+				
 				// a friend's achievement
 				if(!achievement.friends) {
 					achievement.friends = {};
 				}
-
+				
 				if(!achievement.friends[player.playerid]) {
 					achievement.friends[player.playerid] = player;
 				}
