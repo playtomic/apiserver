@@ -1,0 +1,11 @@
+{
+  "name": "Playtomic API Server",
+  "description": "A suite of services for cross-platform web, mobile and downloadable games",
+  "repository": "https://github.com/playtomic/apiserver",
+  "logo": "http://playtomic.org/assets/playtomic.png",
+  "keywords": ["games", "gamedev", "mbaas", "baas", "leaderboards", "achievements", "ios", "android", "unity3d" ],
+  "website": "http://playtomic.org",
+  "addons": [
+      "mongohq:sandbox"
+  ]
+}
