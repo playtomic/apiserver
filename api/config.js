@@ -1,6 +1,9 @@
 module.exports = {
     mongo: {
-        playtomic: parseCredentials(process.env.playtomic || "mongodb://playtomic:playtomic@" + (process.env.IP || "127.0.0.1") + ":27017/playtomic")
+        playtomic: parseCredentials(
+                process.env.playtomic || // manual setup
+                process.env.MONGOHQ_URL ||  // new 'deploy to heroku'
+                "mongodb://playtomic:playtomic@" + (process.env.IP || "127.0.0.1") + ":27017/playtomic") // local testing
     },
 	mailchimp: {
 		apikey: process.env.mailchimp,
@@ -12,11 +15,11 @@ module.exports = {
 };
 
 function parseAPIUrl() {
-	
+
 	if(!process.env.mailchimp) {
 		return null;
 	}
-	
+
 	var apikey = process.env.mailchimp;
 	var dc = apikey.substring(apikey.indexOf("-") + 1);
 	return dc + ".api.mailchimp.com";
