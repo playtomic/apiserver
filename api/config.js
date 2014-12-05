@@ -3,7 +3,7 @@ module.exports = {
         playtomic: parseCredentials(
                 process.env.playtomic || // manual setup
                 process.env.MONGOHQ_URL ||  // new 'deploy to heroku'
-                "mongodb://playtomic:playtomic@" + (process.env.IP || "127.0.0.1") + ":27017/playtomic") // local testing
+                "mongodb://" + (process.env.IP || "127.0.0.1") + ":27017/playtomic") // local testing
     },
 	mailchimp: {
 		apikey: process.env.mailchimp,
@@ -26,6 +26,12 @@ function parseAPIUrl() {
 }
 
 function parseCredentials(connstring) {
+
+    // add blank username
+    if(connstring.indexOf("@") == -1) {
+        connstring = connstring.replace("://", "://:@");
+    }
+     
     var username = connstring.split("://")[1];
     username = username.substring(0, username.indexOf(":"));
     var password = connstring.split("://")[1];
