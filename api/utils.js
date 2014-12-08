@@ -162,6 +162,10 @@ var utils = module.exports = {
         if(!url || url === "") {
             return "http://localhost";
         }
+        
+        if(url.indexOf("://") == -1) {
+            return url;
+        }
 
         url = this.unescape(url);
 

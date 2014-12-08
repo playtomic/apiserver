@@ -56,7 +56,7 @@ var achievements = module.exports = {
         // per-source website or device achievements, websites
 		// get truncated to domain.com
         if(options.source) {
-            query.filter.source = options.source.indexOf("://") > -1 ? utils.baseurl(options.source) : options.source;
+            query.filter.source = utils.baseurl(options.source);
         }
         
         // filters for custom fields
@@ -353,7 +353,7 @@ var achievements = module.exports = {
 		}
 		
 		if(options.source) {
-			achievement.source = options.source;
+			achievement.source = utils.baseurl(options.source);
 		}
 		
 		if(options.fields && Object.keys(options.fields).length > 0) {

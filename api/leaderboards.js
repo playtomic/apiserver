@@ -116,7 +116,7 @@ var leaderboards = module.exports = {
             return;
         }
         
-        if(options.source && options.sourcedomain) {
+        if(options.source ) {
             options.source = utils.baseurl(options.source);
         }
 		
