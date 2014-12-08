@@ -7,20 +7,6 @@ var db = require(__dirname + "/../api/database.js"),
 
 describe("playerlevels", function() {
 	
-    beforeEach(function(done) {
-
-		// wait for db setup to complete
-		function dbready() {
-			if(!db.ready) {
-				return setTimeout(dbready, 100);
-			}
-			
-			done();
-		}
-		
-		dbready();
-    });
-
     var level;
 
     it("Save levels", function(done) {
@@ -30,14 +16,14 @@ describe("playerlevels", function() {
             global: true,
             source: "localhost",
             name: "test level " + Math.random(),
-            username: "ben " + Math.random(),
+            playername: "ben " + Math.random(),
             playerid: 1,
             fields: {},
             data: "sample data" // the level data
         };
-
+        
         v1.save(payload, testgame.request, testgame.response, function(error, output) {
-
+            
             assert.equal(error, null);
             assert.notEqual(output, null);
 
@@ -60,7 +46,7 @@ describe("playerlevels", function() {
             v1.save(payload, testgame.request, testgame.response, function(error, output) {
 
                 assert.notEqual(output, null);
-                
+
                 var json;
                 
                 try {
@@ -69,7 +55,6 @@ describe("playerlevels", function() {
                 }
                 
                 assert.equal(json.errorcode, errorcodes.LevelAlreadyExists);
-                
                 done();
             });
         });
@@ -139,12 +124,10 @@ describe("playerlevels", function() {
                                 }
                                    
                                 // test that we are only storing the last 100 individual votes
-                                db.playtomic.playerlevel_levels.get({_id: payload.levelid}, function(error, tlevels) {
-                                
-                                    assert.notEqual(tlevels, null);
-                                    assert.equal(tlevels.length, 1);
+                                db.PlayerLevel.findOne({_id: payload.levelid}).exec(function(error, tlevel) {
                                     
-                                    level = tlevels[0];
+                                    assert.notEqual(tlevel, null);
+                                    level = tlevel.toObject();
                                     level.levelid = level._id.toString();
                                     delete(level._id);
                                     
@@ -160,7 +143,7 @@ describe("playerlevels", function() {
                                     
                                     // TODO: tests for the new sorting methods
                                     
-
+                                    done();
                                 });
                             });
                         }
@@ -195,20 +178,14 @@ describe("playerlevels", function() {
             assert.notEqual(json, null);
             var x;
             
-            for(x in level) {
-                
-                // TODO: needs a better check against objects
-                if((!x instanceof String && !x instanceof Number && !x instanceof Date) || x === "fields" || x == "hash" || x == "ratingaverages" || !json.level[x]) {
-                    continue;
-                }
-            
-                assert.equal(json.level[x], level[x]);
-            }
-
-            for(x in level.fields) {
-                assert.equal(json.level.fields[x], level.fields[x]);
-            }
-            
+            assert.equal(json.level.publickey, level.publickey);
+            assert.equal(json.level.global, level.global);
+            assert.equal(json.level.source, level.source);
+            assert.equal(json.level.name, level.name);
+            assert.equal(json.level.data, level.data);
+            assert.equal(json.level.playername, level.playername);
+            assert.equal(json.level.playerid, level.playerid);
+            assert.equal(json.level.date, level.date);
             done();
         });
     });

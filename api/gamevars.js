@@ -1,5 +1,5 @@
-var games = require(__dirname + "/games.js"),
-    db = require(__dirname + "/database.js"),
+var db = require(__dirname + "/database.js"),
+    datetime = require(__dirname + "/datetime.js"),
     varlist = {};
 
 var gamevars = module.exports = {
@@ -14,53 +14,54 @@ var gamevars = module.exports = {
      */
     load: function(publickey) {
         return varlist[publickey] || {};
+    },
+    
+    /**
+     * Forces the cache to refresh
+     */
+    forceRefresh: function() {
+       varlist = {};
+       lastupdated = 0;
+       refreshCache();
     }
 };
 
 // Data cache
-(function() {
-    var lastupdated = 0;
+var lastupdated = 0;
+function refreshCache() {
 
-  
-    function refresh() {
-
-        if(!games.ready) {
-            return setTimeout(refresh, 1000);
+    var filter = {$or: [{lastupdated: {$gte: lastupdated}}, {lastupdated: {$exists: false}}]};
+    db.GameVar.find(filter).sort("lastupdated").exec(function(error, vars) {
+        
+        if(error) {
+            console.log("GAMEVARS failed to retrieve results from mongodb: " + error);
+            return setTimeout(refreshCache, 1000);
         }
         
-        db.playtomic.gamevars.get({}, function(error, vars) {
+        vars.forEach(function(gv) {
             
-            if(error) {
-                console.log("GAMEVARS failed to retrieve results from mongodb: " + error);
-                return setTimeout(refresh, 1000);
+            if(!gv.lastupdated) {
+                db.GameVar.update({_id: gv._id}, { lastupdated: datetime.now });
+            } else if(gv.lastupdated > lastupdated) {
+                lastupdated = gv.lastupdated;
             }
             
-            for(var i=0; i<vars.length; i++) {
-				
-                var publickey = vars[i].publickey;
-                
-                if(!publickey) {
-                    console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
-                    continue;
-                }
-                
-                var gamevar = vars[i];
-                
-                if(!varlist[publickey]) {
-                    varlist[publickey] = {};
-                }
-                
-                if(vars[i].lastupdated > lastupdated) {
-                    lastupdated = vars[i].lastupdated;
-                }
-                
-                varlist[publickey][gamevar.name] = gamevar.value;
-            }
-            
-            gamevars.ready = true;
-            return setTimeout(refresh, 30000);
-        });
-    }
+            var gamevar = gv.toObject();
 
-    refresh();
-})();
+            if(!gamevar.publickey) {
+                return console.log("GAMEVARS warning you have gamevars configured that don't have a publickey");
+            }
+            
+            if(!varlist[gamevar.publickey]) {
+                varlist[gamevar.publickey] = {};
+            }
+            
+            varlist[gamevar.publickey][gamevar.name] = gamevar.value;
+        });
+        
+        gamevars.ready = true;
+        return setTimeout(refreshCache, 30000);
+    });
+}
+
+refreshCache();

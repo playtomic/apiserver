@@ -1,1 +1,1 @@
-testing=true mocha -R spec --timeout 300000 ./tests
+testing=true mocha -R spec --timeout 10000 ./tests

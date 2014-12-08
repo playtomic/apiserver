@@ -1,9 +1,54 @@
 var testgame = require(__dirname + "/testgame.js"),
+    datetime = require(__dirname + "/../api/datetime.js"),
+    db = require(__dirname + "/../api/database.js"),
     leaderboards = require(__dirname + "/../api/leaderboards.js"),
     v1 = require(__dirname + "/../v1/leaderboards.js"),
     assert = require("assert");
-
+    
 describe("leaderboards", function() {
+    
+    // sets up our test data
+    before(function(done) {
+        db.LeaderboardScore.remove({ publickey: testgame.publickey }, function(error) {
+            
+    	    var data = [
+    			{playername: "alicia", playerid: 1, points: 21000, source: "ios" },
+    			{playername: "fred", playerid: 2, points: 22000, source: "ios" }, 
+    			{playername: "harry", playerid: 3, points: 23000, source: "ios" },
+    			{playername: "jules", playerid: 4, points: 24000, source: "playstore" },
+    			{playername: "michael", playerid: 5, points: 25000, source: "amazon" },
+    			{playername: "michelle", playerid: 6, points: 26000, source: "playstore"},
+    			{playername: "paul", playerid: 7, points: 27000, source: "web"},
+    			{playername: "peter", playerid: 8, points: 28000, source: "web"},
+    			{playername: "robert", playerid: 9, points: 29000, source: "ios"},
+    			{playername: "sally", playerid: 10, points: 30000, source: "amazon" }
+    		];
+    		
+    		function insertScore() {
+    		    if(data.length === 0) {
+    		        return done();
+    		    }
+    		    
+    		    var score = data.shift();
+                score.publickey = testgame.publickey;
+                score.table = "scores";
+                score.date = datetime.now; 
+                        
+    		    var mscore = new db.LeaderboardScore(score);
+    		    return mscore.save(function(error) {
+    		        if(error) {
+    		           throw(error);
+    		       }
+    		       
+    		       db.LeaderboardScore.count().exec(function(error, numscores) {
+    		            return insertScore(); 
+    		       });
+    		    });
+    		}
+    		
+    		insertScore();
+        });
+    });
 
     it("Get highest 10 scores", function(done) {
 		
@@ -46,11 +91,9 @@ describe("leaderboards", function() {
 
             // test the caching
             leaderboards.list(options, function(error, errorcode, numscores, scores) {
-
                 for(var i=0; i<scores.length; i++) {
                     assert.equal(scores[i].playername, oldscores[i].playername);
                 }
-
                 done();
             });
         });
@@ -100,25 +143,24 @@ describe("leaderboards", function() {
 		
 		var options = {
             // save params
-            source: "localhost",
             points: 10000,
             playerid: "1",
             fields: {},
-            playername: "ben",
+            playername: "leaderboards:154",
             // list params
             table: "scores",
             lowest: true,
             perpage: 2,
             publickey: testgame.publickey
         };
-
+        
         leaderboards.saveAndList(options, function(error, errorcode, numscores, scores) {
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores, 2);
             assert.equal(scores.length, 2);
             assert.equal(scores[0].points, 10000);
-            assert.equal(scores[0].playername, "ben");
+            assert.equal(scores[0].playername, options.playername);
             assert.equal(scores[0].rank, 1);
             done();
         });
@@ -129,14 +171,12 @@ describe("leaderboards", function() {
 		var options = {
 
             // save params
-            source: "localhost",
             points: 12000,
             playerid: "11",
             fields: {
                 age: 1
             },
-            playername: "isabella",
-
+            playername: "leaderboards:184",
             // list params
             table: "scores",
             highest: true,
@@ -156,10 +196,9 @@ describe("leaderboards", function() {
             // one of the scores should be the saved one
             for(var i=0; i<10; i++) {
 
-                if(scores[i].playername == "isabella") {
+                if(scores[i].playername == options.playername) {
                     assert.equal(scores[i].points, 12000);
                     assert.equal(scores[i].fields.age, 1);
-                    assert.equal(scores[i].playername, "isabella");
                     done();
 					return;
                 }
@@ -174,9 +213,8 @@ describe("leaderboards", function() {
 		
 		var options = {
             // save params
-            source: "localhost",
             points: 26500,
-            playername: "random " + Math.random(),
+            playername: "leaderboards:226",
 			allowduplicates: true,
             // list params
             table: "scores",
@@ -186,7 +224,6 @@ describe("leaderboards", function() {
         };
 
         leaderboards.saveAndList(options, function(error, errorcode, numscores, scores) {
-			
             assert.equal(error, null);
             assert.equal(errorcode, 0);
             assert.equal(numscores, 13);
@@ -263,8 +300,7 @@ describe("leaderboards", function() {
 
         var payload = {
             publickey: testgame.publickey,
-            source: "localhost",
-            playername: "dummy",
+            playername: "leaderboards.js:313",
             points: 10,
             table: "scores",
             fields: {}
@@ -327,13 +363,12 @@ describe("leaderboards", function() {
 
         var payload = {
             // save params
-            source: "localhost",
             points: 12000,
             playerid: "11",
             fields: {
                 age: 1
             },
-            playername: "isabella",
+            playername: "leaderboards.js:381",
             
             // list params
             table: "scores",
@@ -357,7 +392,7 @@ describe("leaderboards", function() {
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
             assert.equal(json.scores.length, 7);
-            assert.equal(json.numscores, 15);
+            assert.equal(json.numscores, 16);
             done();
         });
     });

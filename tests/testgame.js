@@ -1,4 +1,6 @@
-module.exports = {
+
+
+var testgame = module.exports = {
     publickey: "testpublickey",
     privatekey: "testprivatekey",
     leaderboards: true,
@@ -28,3 +30,20 @@ module.exports = {
         }
     }
 };
+
+// make sure a fresh test game exists in the database
+(function() {
+    var db = require(__dirname + "/../api/database.js");
+    db.Game.remove({publickey: testgame.publickey }, function() {
+    	var game = {
+    	    publickey: testgame.publickey, 
+    	    privatekey: testgame.privatekey 
+    	};
+    	var ngame = new db.Game(game);
+    	ngame.save(function(error) {
+    	    if(error) {
+    	        throw(error);
+    	    }
+    	});
+    });
+})();

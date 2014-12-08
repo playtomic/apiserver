@@ -18,6 +18,7 @@ describe("games", function() {
 				return setTimeout(dbready, 100);
 			}
 			
+			// wait for games to be ready
 	        function gamesready() {
             
 	            if(!games.ready) {
@@ -67,11 +68,12 @@ describe("games", function() {
     it("Testing invalid information", function() {
 
         function fakeid() {
-            var text = "";
+            var text = [];
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            for( var i=0; i < 50; i++ )
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
-            return text;
+            for(var i=0; i<50; i++) {
+                text[i] = possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text.join("");
         }
 
         assert.equal(games.load(), null);

@@ -1,19 +1,15 @@
 {
-    "name": "PlaytomicAPIServer",
-    "version": "0.0.1",
-    "dependencies": {
-        "bisection": "0.0.2",
-        "express": "2.5.2",
-        "hashring": "0.0.5",
-        "mongodb": "1.0.2",
-        "request": "2.9.3",
-        "redis": "0.7.1",
-        "geoip-native": "0.0.8",
-        "node-mongodb-wrapper": "0.0.11",
-        "crypto": "0.0.3"
-    },
-    "engines": {
-        "node": "0.8.x",
-        "npm":  "1.1.x"
-    }
+  "name": "PlaytomicAPIServer",
+  "version": "0.0.2",
+  "dependencies": {
+    "express": "^4.10.4",
+    "geoip-native": "^0.0.8",
+    "mongodb": "^1.4.23",
+    "mongoose": "3.8.20",
+    "request": "2.49.0"
+  },
+  "engines": {
+    "node": "0.10.32",
+    "npm": "1.4.28"
+  }
 }

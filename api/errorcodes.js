@@ -34,8 +34,7 @@ module.exports = {
 		AchievementsDisabled: 500,
 		NoPlayerId: 501,
 		NoPlayerName: 502,
-		NoAchievement: 503,
-		InvalidAchievement: 504,
+		InvalidAchievement: 503,
 		AlreadyHadAchievementNotSaved: 505,
 		AlreadyHadAchievementSaved: 506,
 		
@@ -77,7 +76,6 @@ module.exports = {
 		"501": "Missing playerid",
 		"502": "Missing player name",
 		"503": "Missing achievement",
-		"504": "Invalid achievement for achievement key",
 		"505": "Player already had the achievement.  You can overwrite old achievements with overwrite=true or save each time the player is awarded with allowduplicates=true",
 		"506": "Player already had the achievement and it was overwritten or a duplicate was saved successfully",
 		

@@ -1,4 +1,5 @@
 var db = require(__dirname + "/database.js"),
+    datetime = require(__dirname + "/datetime.js"),
     gamelist = {};
 
 var games = module.exports = {
@@ -34,37 +35,38 @@ if(process.env.testing) {
     };
 
     games.ready = true;
-};
+}
 
 // Data cache
-(function() {
-    var lastupdated = 0;
+(function(lastupdated) {
 
     function refresh() {
 
-        db.playtomic.games.get({}, function(error, credentials)
+        var filter = {$or: [{lastupdated: {$gte: lastupdated}}, {lastupdated: {$exists: false}}]};
+        db.Game.find(filter).exec(function(error, games)
         {
             if(error) {
-                if(callback) {
-                    callback(error);
-                }
-
                 console.log("GAMES failed to retrieve results from mongodb: " + error);
                 return setTimeout(refresh, 1000);
             }
 			
 			var keys = ["enabled", "leaderboards", "playerlevels", "gamevars", "geoip", "achievements", "newsletter"];
-
-            for(var i=0; i<credentials.length; i++) {
-                var publickey = credentials[i].publickey;
-                gamelist[publickey] = credentials[i];
-				
-				for(var j=0; j<keys.length; j++) {				
-					if(!credentials[i].hasOwnProperty(keys[j])) {
-						credentials[i][keys[j]] = true;
-					}
-				}
-            }
+			
+			games.forEach(function(gd) {
+			   
+                if(!gd.lastupdated) {
+                    db.Game.update({_id: gd._id}, { lastupdated: datetime.now });
+                } else if(gd.lastupdated > lastupdated) {
+                    lastupdated = gd.lastupdated;
+                }
+                
+                var game = gd.toObject();
+			    gamelist[game.publickey] = game;
+			    
+			    keys.forEach(function(key) {
+			        game[key] = game[key] !== false;
+			    });
+			});
 
             games.ready = true;
             return setTimeout(refresh, 30000);
@@ -72,4 +74,4 @@ if(process.env.testing) {
     }
 
     refresh();
-})();
+})(0);
