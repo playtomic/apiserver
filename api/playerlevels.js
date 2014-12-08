@@ -14,12 +14,7 @@ module.exports = {
             filter: {
                 publickey: options.publickey
             },
-            fields: {
-                ratings: 0,
-                ratingslast100: 0,
-                lastaggregated: 0,
-                data: "data" in options ? (options.data ? 1 : 0) : 1
-            },
+            fields: "-ratings -ratingslast100 -lastaggregated" + (options.data !== true ? " -data" : ""),
             limit: parseInt((options.perpage || "20"), 10),
             skip: ((options.page - 1) * options.perpage),
             sort: {}
@@ -86,7 +81,7 @@ module.exports = {
             query.filter.playerid = playerids[0];
         }
         
-        db.PlayerLevel.find(query.filter).sort(query.sort).limit(query.limit).skip(query.skip).exec(function(error, levels){
+        db.PlayerLevel.find(query.filter).select(query.fields).sort(query.sort).limit(query.limit).skip(query.skip).exec(function(error, levels){
             if (error) {
                 return callback("unable to load levels (api.playerlevels.list:93)", errorcodes.GeneralError);
             }
