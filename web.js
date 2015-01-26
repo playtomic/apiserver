@@ -39,7 +39,8 @@ var prepareRequests = function(request, response, next) {
 
 // Configuration
 app.use(prepareRequests);
-app.use(bodyParser());
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 //app.use(app.router);
 
 if ('production' == app.get('env')) {
