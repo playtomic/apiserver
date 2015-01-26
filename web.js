@@ -37,17 +37,15 @@ var prepareRequests = function(request, response, next) {
 
 
 // Configuration
-app.configure(function(){
-    app.use(prepareRequests);
-    app.use(express.bodyParser());
-    app.use(app.router);
-});
+app.use(prepareRequests);
+app.use(express.bodyParser());
+app.use(app.router);
 
-app.configure("production", function(){
+if ('production' == app.get('env')) {
     process.on("uncaughtException", function (exceptionmessage) {
         console.log("EXCEPTION: \n" + exceptionmessage);
     });
-});
+}
 
 // start
 var port = process.env.PORT || 3000;
