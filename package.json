@@ -6,7 +6,8 @@
     "geoip-native": "^0.0.8",
     "mongodb": "^1.4.23",
     "mongoose": "3.8.20",
-    "request": "2.49.0"
+    "request": "2.49.0",
+    "body-parser": "1.10.2",
   },
   "engines": {
     "node": "0.10.32",
