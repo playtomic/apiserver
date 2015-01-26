@@ -1,4 +1,5 @@
 var express = require("express"),
+    bodyParser = require('body-parser'),
     querystring = require("querystring"),
     v1 = require(__dirname + "/v1/router.js");
     
@@ -38,8 +39,8 @@ var prepareRequests = function(request, response, next) {
 
 // Configuration
 app.use(prepareRequests);
-app.use(express.bodyParser());
-app.use(app.router);
+app.use(bodyParser());
+//app.use(app.router);
 
 if ('production' == app.get('env')) {
     process.on("uncaughtException", function (exceptionmessage) {
