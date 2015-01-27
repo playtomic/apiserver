@@ -18,9 +18,9 @@ var prepareRequests = function(request, response, next) {
     response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     response.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
 
-    //console.log("request.method =" + request.method);
-    //console.log("request.body = " + request.body);
-    //console.log("request.body.data = " + request.body.data);
+    console.log("request.method =" + request.method);
+    console.log("request.body = " + request.body);
+    console.log("request.body.data = " + request.body.data);
 
     // post data
     if(request.method != "POST" || (request.body && request.body.data)) {
