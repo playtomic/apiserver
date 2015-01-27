@@ -1,6 +1,7 @@
 var express = require("express"),
     bodyParser = require('body-parser'),
     querystring = require("querystring"),
+    util = require("util"),
     v1 = require(__dirname + "/v1/router.js");
     
 require(__dirname + "/api/database.js"), // to trigger the setup
@@ -19,7 +20,7 @@ var prepareRequests = function(request, response, next) {
     response.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
 
     console.log("request.method =" + request.method);
-    console.log("request.body = " + request.body);
+    console.log("request.body = " + util.inspect(request.body));
     console.log("request.body.data = " + request.body.data);
 
     // post data
@@ -62,10 +63,10 @@ app.listen(port, function() {
 });
 
 //*tj TEMP
-//router.use(function(req, res, next) {
-//    console.log(req.method, req.url);
-//    next();
-//})
+router.use(function(req, res, next) {
+    console.log(req.method, req.url);
+    next();
+})
 
 // cross domain
 var crossdomain = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\"><cross-domain-policy><site-control permitted-cross-domain-policies=\"master-only\" /><allow-access-from domain=\"*\" to-ports=\"*\" secure=\"false\" /><allow-http-request-headers-from domain=\"*\" headers=\"*\" /></cross-domain-policy>";
