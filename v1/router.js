@@ -23,6 +23,8 @@ module.exports = {
      */
     router: function(request, response, next, testcallback) {
 
+        //console.log("**** in router");
+
         // validate the game, it's set up so you can optionally
         // pass your public key in through the url which is easier
         // for testing
@@ -55,6 +57,11 @@ module.exports = {
 
             return output.terminate(payload, response, 1, "No posted data (router.js:61)");
         }
+
+        //console.log("request.body.data: "+request.body.data);
+        //console.log("request.body.hash: "+request.body.hash);
+        //console.log("config.privatekey: "+config.privatekey);
+
 
         var decrypted = requestauth.validate(request.body.data, request.body.hash, config.privatekey);
 

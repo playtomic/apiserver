@@ -13,7 +13,7 @@ var testgame = module.exports = {
     },
     request: {
         ip: "62.163.200.241",
-        url: "https://g8bc7e3b77ce2446c.gdtk.playtomic.com/v1",
+        url: "https://dragonsdodge.heroku.com/v1",
 
         headers: {
             "x-forwarded-for": "62.163.200.241"

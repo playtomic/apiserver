@@ -1,5 +1,6 @@
 var db = require(__dirname + "/database.js"),
     datetime = require(__dirname + "/datetime.js"),
+    util = require('util'),
     varlist = {};
 
 var gamevars = module.exports = {
@@ -39,7 +40,7 @@ function refreshCache() {
         }
         
         vars.forEach(function(gv) {
-            
+
             if(!gv.lastupdated) {
                 db.GameVar.update({_id: gv._id}, { lastupdated: datetime.now });
             } else if(gv.lastupdated > lastupdated) {
