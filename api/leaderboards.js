@@ -238,9 +238,9 @@ var leaderboards = module.exports = {
                         if(scores && scores.length) {
                         for(var i=0, len=scores.length; i<len; i++) {
                             if(scores[i].points == options.points && 
-                               scores[i].playerid == query.playerid &&
-                               scores[i].playerid == query.playername &&
-                               scores[i].playerid == query.source) {
+                               scores[i].playerid == options.playerid &&
+                               scores[i].playername == options.playername &&
+                               scores[i].source == options.source) {
                                    scores[i].submitted = true;
                                    break;
                                }
