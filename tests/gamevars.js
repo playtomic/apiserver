@@ -74,9 +74,15 @@ describe("gamevars", function() {
         v1.load(testgame.payload, testgame.request, testgame.response, function(error, output) {
             assert.equal(error, null);
             assert.notEqual(output, null);
+
             var json = JSON.parse(output);
             assert.notEqual(json, null);
-            assert.equal(Object.keys(json).length, 5);
+            assert.equal(Object.keys(json).length, 3);
+
+            var gamevars = json["gamevars"];
+            assert.notEqual(gamevars, null);
+            assert.equal(Object.keys(gamevars).length, 3);
+
             assert.equal(json.errorcode, 0);
             assert.equal(json.success, true);
             done();
