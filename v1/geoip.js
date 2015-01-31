@@ -20,7 +20,7 @@ module.exports = {
             return output.terminate(payload, response, 1, country.error);
         }
         
-        var r = output.end(payload, response, {"geoip": country}, errorcodes.NoError);
+        var r = output.end(payload, response, {geoip: country}, errorcodes.NoError);
         
         if(testing && testcallback) {
             testcallback(null, r);
