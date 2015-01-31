@@ -73,10 +73,12 @@ describe("geoip", function() {
             }
             
             assert.notEqual(json, null);
-            assert.equal(json.code, "NL");
-            assert.equal(json.name, "Netherlands");
             assert.equal(json.success, true);
             assert.equal(json.errorcode, 0);
+
+            var geoip = json["geoip"];
+            assert.equal(geoip.code, "NL");
+            assert.equal(geoip.name, "Netherlands");
             done();
         });
     });
