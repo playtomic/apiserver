@@ -139,6 +139,8 @@ var leaderboards = module.exports = {
         score.hash = md5([options.publickey, options.ip, options.table, options.playername, 
                           options.playerid, options.highest, options.source].join("."));
         score.points = options.points;
+	
+	score.date = datetime.now;
 		
         // check bans
 
