@@ -19,10 +19,6 @@ var prepareRequests = function(request, response, next) {
     response.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     response.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
 
-    console.log("request.method =" + request.method);
-    console.log("request.body = " + util.inspect(request.body));
-    console.log("request.body.data = " + request.body.data);
-
     // post data
     if(request.method != "POST" || (request.body && request.body.data)) {
         next();
@@ -61,12 +57,6 @@ var port = process.env.PORT || 3000;
 app.listen(port, function() {
   console.log("Listening on " + port + ", env: " + process.env.NODE_ENV + ", local: " + (process.env.local || false));
 });
-
-//*tj TEMP
-router.use(function(req, res, next) {
-    console.log(req.method, req.url);
-    next();
-})
 
 // cross domain
 var crossdomain = "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd\"><cross-domain-policy><site-control permitted-cross-domain-policies=\"master-only\" /><allow-access-from domain=\"*\" to-ports=\"*\" secure=\"false\" /><allow-http-request-headers-from domain=\"*\" headers=\"*\" /></cross-domain-policy>";
