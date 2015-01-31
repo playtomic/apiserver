@@ -6,6 +6,6 @@
   "keywords": ["games", "gamedev", "mbaas", "baas", "leaderboards", "achievements", "ios", "android", "unity3d" ],
   "website": "http://playtomic.org",
   "addons": [
-      "mongohq:sandbox"
+      "mongolab"
   ]
 }

@@ -1,7 +1,8 @@
 module.exports = {
     mongodb: {
         playtomic: process.env.playtomic || // manual setup
-                   process.env.MONGOHQ_URL ||  // new 'deploy to heroku'
+                   process.env.MONGOHQ_URL ||  // 'deploy to heroku' for people using Compose (neé MongoHQ)
+                   process.env.MONGOLAB_URI || // 'deploy to heroku' for people using MongoLab
                    "mongodb://127.0.0.1:27017/playtomic" // local testing
     },
 	mailchimp: {
