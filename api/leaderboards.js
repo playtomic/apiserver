@@ -323,7 +323,7 @@ function rank(query, highest, points, callback) {
             return callback(null, errorcodes.NoError, ind.removeHash[points].before);
         }
         
-        addToIndex(index, highest, newscore, function(o) {
+        addToIndex(ind, highest, newscore, function(o) {
             return callback(null, newscore.before);    
         });
     } 
