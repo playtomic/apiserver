@@ -139,6 +139,8 @@ var leaderboards = module.exports = {
         score.hash = md5([options.publickey, options.ip, options.table, options.playername, 
                           options.playerid, options.highest, options.source].join("."));
         score.points = options.points;
+	
+	score.date = datetime.now;
 		
         // check bans
 
@@ -238,9 +240,9 @@ var leaderboards = module.exports = {
                         if(scores && scores.length) {
                         for(var i=0, len=scores.length; i<len; i++) {
                             if(scores[i].points == options.points && 
-                               scores[i].playerid == query.playerid &&
-                               scores[i].playerid == query.playername &&
-                               scores[i].playerid == query.source) {
+                               scores[i].playerid == options.playerid &&
+                               scores[i].playername == options.playername &&
+                               scores[i].source == options.source) {
                                    scores[i].submitted = true;
                                    break;
                                }
@@ -321,7 +323,7 @@ function rank(query, highest, points, callback) {
             return callback(null, errorcodes.NoError, ind.removeHash[points].before);
         }
         
-        addToIndex(index, highest, newscore, function(o) {
+        addToIndex(ind, highest, newscore, function(o) {
             return callback(null, newscore.before);    
         });
     } 
